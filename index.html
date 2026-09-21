@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冰岛+挪威 13 天 · 协作看板</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: #f4f6f8; color: #22303c; line-height: 1.55; padding-bottom: 70px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 20px 16px; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  .sub { color: #6b7a88; font-size: 13.5px; margin-bottom: 14px; }
+  .tip { background: #fff8e6; border: 1px solid #ecd28a; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 18px; }
+  h2 { font-size: 16.5px; margin: 22px 0 8px; padding-left: 9px; border-left: 4px solid #1e6fa8; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 10px; font-size: 13.5px; }
+  th { background: #1e3a5a; color: #fff; text-align: left; padding: 8px 10px; font-size: 12.5px; font-weight: 600; }
+  td { border-top: 1px solid #e6eaee; padding: 8px 10px; vertical-align: top; }
+  tr:first-child td { border-top: none; }
+  .st { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .st-ok { background: #e3f5e9; color: #1c7a3d; }
+  .st-todo { background: #fdeaea; color: #b3382e; }
+  .st-wait { background: #fff3d6; color: #9a6b00; }
+  .st-free { background: #e8eef5; color: #4a6274; }
+  .spot { display: flex; gap: 10px; align-items: flex-start; }
+  .spot img { width: 108px; height: 72px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .spot .nm { font-weight: 700; }
+  .spot .en { color: #8a97a3; font-size: 12px; font-weight: 400; }
+  .spot .ds { color: #54626e; font-size: 12.5px; margin-top: 2px; }
+  a { color: #1e6fa8; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .map { font-size: 12px; white-space: nowrap; }
+  .blank { color: #b0bcc6; letter-spacing: 1px; }
+  .day { break-inside: avoid; page-break-inside: avoid; }
+  .food td { background: #fbf7ee; }
+  .small { font-size: 12.5px; color: #54626e; }
+  .footer { margin-top: 26px; padding-top: 12px; border-top: 1px solid #dde3e8; color: #8a97a3; font-size: 12.5px; }
+  @media print {
+    body { background: #fff; padding-bottom: 0; }
+    #editbar { display: none !important; }
+    .day { break-inside: avoid; page-break-inside: avoid; }
+    h2 { break-after: avoid; }
+    @page { margin: 12mm 10mm; }
+    .tip { border: 1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🇮🇸🇳🇴 冰岛 + 挪威 13 天 · 协作看板</h1>
+  <p class="sub">2027年1月11日（周一）出发 → 1月23日（周六）回程 · 12 晚 · 朋友组队 · 休闲度假 · 全程包车+私导（冰岛段）</p>
+
+  <div class="tip">
+    📌 <b>预订原则</b>：🔴 最先抢蓝冰洞团（1/14）+ 1/18 直飞 + The Retreat + Dill 餐厅（提前 3-4 个月）；🟡 酒店等 2026年10-12月陆续订（EDITION 万豪 2026年1月底才开售）；🟢 观鲸/缆车/Sky Lagoon 行前 1-2 个月订。价格为 2026-09-22 调研口径，1 月旺季以下单为准。<b>本页可直接改：点底部「编辑模式」，改动自动云端同步；打印/存 PDF 请用浏览器 Cmd+P。</b>
+  </div>
+
+  <h2>📒 总表（预订状态一览）</h2>
+  <table>
+    <tr><th style="width:22%">项目</th><th style="width:22%">日期 · 时间</th><th style="width:12%">状态</th><th>预约入口 / 备注（确认号留白）</th></tr>
+    <tr><td>✈️ 去程 · 国航商务</td><td>1/11 周一 03:30 → 11:15</td><td><span class="st st-wait">⏳ 报价中</span></td><td>经停哥本哈根 2h15m · ¥13,600-14,800/人 · 1/10 周日深夜到机场 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>✈️ 中段 · 冰岛航空直飞</td><td>1/18 周一 07:50 → 12:45</td><td><span class="st st-todo">⬜ 未订</span></td><td>🔴 每周仅周一/周五两班，座位少 · <a href="https://www.icelandair.com">icelandair.com</a> · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>✈️ 回程 · 海航商务（你）</td><td>1/23 周六 12:30 → 1/24 04:30</td><td><span class="st st-wait">⏳ 报价中</span></td><td>奥斯陆 → 北京首都 · ¥12,600/人 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>✈️ 回程 · 卡航商务（朋友）</td><td>1/23 周六 15:05 → 1/24 15:25</td><td><span class="st st-wait">⏳ 报价中</span></td><td>多哈转机 2h50m → 杭州 · ¥9,600/人 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>✈️ 挪内 · TOS→OSL 早班</td><td>1/21 周四 约 07:00 → 09:00</td><td><span class="st st-todo">⬜ 未订</span></td><td>SAS / Norwegian 每天多班 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>🏨 The Retreat at Blue Lagoon</td><td>1/11-13 · 2 晚</td><td><span class="st st-todo">⬜ 未订</span></td><td>🔴 <a href="https://www.bluelagoon.com">bluelagoon.com</a> 官网两晚起订，¥11,000+/晚，住客提醒"提前一个半月订" · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>🏨 Fosshotel Glacier Lagoon</td><td>1/13-15 · 2 晚</td><td><span class="st st-todo">⬜ 未订</span></td><td>官网 / Booking · 1月全年最低月 ~¥1,470/晚 · ⚠️ 别加钱升海景房（看不到海）· 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>🏨 The Reykjavik EDITION</td><td>1/15-18 · 3 晚</td><td><span class="st st-todo">⬜ 未订</span></td><td>⚠️ 万豪提前 355 天开售 ≈ 2026年1月底开卖，用 Bonvoy 会员价；每晚有目的地费 ~7,000 ISK 可抵餐饮 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>🏨 Scandic Ishavshotel</td><td>1/18-21 · 3 晚</td><td><span class="st st-todo">⬜ 未订</span></td><td>注册 Scandic Friends 会员后官网订最优 · ~¥1,240-3,000/晚含早 · 订的是位置景观，硬件三星 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>🏨 Sommerro（奥斯陆终选）</td><td>1/21-23 · 2 晚</td><td><span class="st st-todo">⬜ 未订</span></td><td>1月全年最低价月 ~¥2,300/晚 · 官网 <a href="https://www.sommerrohouse.com">sommerrohouse.com</a> / Hotels.com 比价 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>🧊 蓝冰洞团</td><td>1/14 周四 09:30</td><td><span class="st st-todo">⬜ 未订</span></td><td>🔴 Ice Guide / Glacier Guides，冰河湖停车场集合约 3h · 若天气取消改 1/15 9:30 保底 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>🌌 极光追猎团</td><td>1/19 周二 18:00</td><td><span class="st st-todo">⬜ 未订</span></td><td>🔴 Chasing Lights / Arctic Explorers · 约 6h 含篝火晚餐+摄影跟拍 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>🐋 特罗姆瑟峡湾观鲸</td><td>1/20 周三 白天</td><td><span class="st st-todo">⬜ 未订</span></td><td>🟢 行前订 · 大船 5-6h · 不想出海可换狗拉雪橇 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>♨️ Sky Lagoon</td><td>1/16 周六 晚</td><td><span class="st st-todo">⬜ 未订</span></td><td>🟢 官网提前订时段 · 7 步仪式 · 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>🚡 Fjellheisen 缆车</td><td>1/18 周一 17:00</td><td><span class="st st-free">🆓 现场买</span></td><td>看全城夜景+极光 · 山顶冷，多穿</td></tr>
+    <tr><td>🚐 冰岛包车+私导</td><td>1/11 接机 - 1/18 送机 · 7 天</td><td><span class="st st-wait">⏳ 比价中</span></td><td>👩‍💼 助理负责比价（见下表）· 确认号 <span class="blank">______</span></td></tr>
+    <tr><td>🛂 申根签证</td><td>2026年9-10月办理</td><td><span class="st st-todo">⬜ 未办</span></td><td>冰岛或挪威送签 · 保险/电话卡/欧标转换插头行前置办</td></tr>
+    <tr><td>🍽 餐厅订位（5 顿重头戏）</td><td>见每日表 🍽 行</td><td><span class="st st-todo">⬜ 未订</span></td><td>🔴 Moss（1/11）· Dill（1/16，提前 3-4 个月！）· Grillmarkaðurinn（1/17）· Fiskekompaniet（1/18）· Kontrast（1/22，提前 3-6 周）</td></tr>
+  </table>
+
+  <h2>👩‍💼 助理待办（等待确认）</h2>
+  <table>
+    <tr><th style="width:22%">任务</th><th style="width:26%">要求</th><th style="width:12%">状态</th><th>执行说明 / 结果回填</th></tr>
+    <tr><td>1️⃣ 包车比价</td><td>冰岛 7 天（1/11 接机 - 1/18 送机）含私导，冬季四驱大车</td><td><span class="st st-wait">⏳ 进行中</span></td><td>至少 3 家比价：① Guide to Iceland 私导包车 ② 华人司导（小红书/携程）③ 当地公司（如 Your Day Tours / Nordic Visitor）· 要求报总价+含不含司机食宿+冬季胎 · 结果：<span class="blank">______</span></td></tr>
+    <tr><td>2️⃣ 酒店房价比价</td><td>5 家酒店按实际入住日期比价</td><td><span class="st st-wait">⏳ 进行中</span></td><td>每家查 3 渠道：官网 vs Booking vs Trip.com/携程，截图留档 · 注意：Retreat 只能官网；EDITION 2026年1月底才开售；Scandic 先注册会员；Fosshotel 不升海景房 · 结果：<span class="blank">______</span></td></tr>
+  </table>
+
+  <h2>🗓 每日行程 + 晚餐推荐</h2>
+
+  <div class="day">
+  <h2>D1 · 1月11日 周一 · 抵达 + 蓝湖</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>11:15</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Refleksjoner.jpg/960px-Refleksjoner.jpg" alt=""><div><span class="nm">凯夫拉维克机场 → The Retreat</span> <span class="en">KEF → Blue Lagoon</span><p class="ds">落地后直接进蓝湖度假区，私汤倒时差，零光害夜里可看极光</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Blue+Lagoon+Iceland">📍 地图</a></div></div></td><td>包车接机 20 分钟</td><td>下午+晚上</td><td><span class="st st-wait">⏳ 酒店待订</span></td></tr>
+    <tr class="food"><td>🍽 18:00</td><td><b>Moss Restaurant</b>（米其林一星，就在 Retreat 酒店里，冰岛食材 tasting menu）备选：Lava Restaurant（蓝湖主楼，景观位）</td><td>酒店内步行</td><td>2-3h</td><td><span class="st st-todo">⬜ 需订位</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D2 · 1月12日 周二 · 蓝湖 + 黄金圈</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>上午</td><td><div class="spot"><div><span class="nm">蓝湖大温泉</span> <span class="en">Blue Lagoon</span><p class="ds">住客含票，可约水中按摩</p></div></div></td><td>酒店内</td><td>2-3h</td><td><span class="st st-ok">✅ 含在房费</span></td></tr>
+    <tr><td>11:00</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Great_Geysir_%282%29.jpg/960px-Great_Geysir_%282%29.jpg" alt=""><div><span class="nm">间歇泉</span> <span class="en">Geysir / Strokkur</span><p class="ds">每隔几分钟喷一次的地热喷泉，黄金圈第一站</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Geysir+Iceland">📍 地图</a></div></div></td><td>包车 1h</td><td>45min</td><td><span class="st st-free">🆓 免费</span></td></tr>
+    <tr><td>13:15</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Iceland_-_2017-02-22_-_Gullfoss_-_3684.jpg/960px-Iceland_-_2017-02-22_-_Gullfoss_-_3684.jpg" alt=""><div><span class="nm">黄金瀑布</span> <span class="en">Gullfoss</span><p class="ds">冰岛最壮观双层瀑布，务必赶在 15:45 日落前</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Gullfoss">📍 地图</a></div></div></td><td>包车 15min</td><td>1h</td><td><span class="st st-free">🆓 免费</span></td></tr>
+    <tr class="food"><td>🍽 晚</td><td><b>Lava Restaurant</b>（蓝湖主楼内，熔岩景观晚餐）或回 Retreat 吃 Spa Restaurant 简餐，晚上继续私汤</td><td>包车返回蓝湖</td><td>1.5h</td><td><span class="st st-todo">⬜ 需订位</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D3 · 1月13日 周三 · 南岸瀑布 → 黑沙滩 → 冰河湖日落</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>11:00</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Seljalandsfoss_Waterfall%2C_Iceland%2C_20240720_1500_3096.jpg/960px-Seljalandsfoss_Waterfall%2C_Iceland%2C_20240720_1500_3096.jpg" alt=""><div><span class="nm">塞里雅兰瀑布</span> <span class="en">Seljalandsfoss</span><p class="ds">可以走到水帘后面的瀑布（冬季注意结冰）</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Seljalandsfoss">📍 地图</a></div></div></td><td>包车沿 1 号公路</td><td>45min</td><td><span class="st st-free">🆓 免费</span></td></tr>
+    <tr><td>12:30</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Sk%C3%B3gafoss_Waterfall%2C_Iceland%2C_20240720_1330_2993.jpg/960px-Sk%C3%B3gafoss_Waterfall%2C_Iceland%2C_20240720_1330_2993.jpg" alt=""><div><span class="nm">斯科加瀑布</span> <span class="en">Skógafoss</span><p class="ds">25 米宽 60 米落差的大瀑布，可爬观景台阶</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Skogafoss">📍 地图</a></div></div></td><td>包车 30min</td><td>45min</td><td><span class="st st-free">🆓 免费</span></td></tr>
+    <tr><td>14:00</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/Reynisfjara%2C_Su%C3%B0urland%2C_Islandia%2C_2014-08-17%2C_DD_164.JPG/960px-Reynisfjara%2C_Su%C3%B0urland%2C_Islandia%2C_2014-08-17%2C_DD_164.JPG" alt=""><div><span class="nm">雷尼斯黑沙滩</span> <span class="en">Reynisfjara</span><p class="ds">玄武岩柱黑沙滩，《权游》取景地 ⚠️ 远离海浪</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Reynisfjara">📍 地图</a></div></div></td><td>包车 30min</td><td>1h</td><td><span class="st st-free">🆓 免费</span></td></tr>
+    <tr><td>15:30</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/65/Jokulsarlon_Panorama.jpg/960px-Jokulsarlon_Panorama.jpg" alt=""><div><span class="nm">杰古沙龙冰河湖日落</span> <span class="en">Jökulsárlón</span><p class="ds">浮冰湖金色日落 + 顺路 5 分钟钻石沙滩</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Jokulsarlon">📍 地图</a></div></div></td><td>包车 2h15m</td><td>1h</td><td><span class="st st-free">🆓 免费</span></td></tr>
+    <tr class="food"><td>🍽 晚</td><td><b>Fosshotel Glacier Lagoon 酒店餐厅</b>（周边荒芜没得选；Telegraph 评分 8/10，羊肉/北极红点鲑；16:00-18:00 有 happy hour）· 夜里荒野蹲极光</td><td>酒店内</td><td>1.5h</td><td><span class="st st-ok">✅ 到店即用</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D4 · 1月14日 周四 · 蓝冰洞（全程重头戏）</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>09:30</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/Ice_Cave_Explorer_-_Iceland.jpg/960px-Ice_Cave_Explorer_-_Iceland.jpg" alt=""><div><span class="nm">蓝冰洞团</span> <span class="en">Ice Cave Tour</span><p class="ds">瓦特纳冰川蓝冰洞，冰河湖停车场集合，约 3 小时 ⚠️ 天气取消则改 1/15 早 9:30 保底</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Jokulsarlon+parking">📍 地图</a></div></div></td><td>包车 25min</td><td>3h</td><td><span class="st st-todo">🔴 急订</span></td></tr>
+    <tr><td>下午</td><td><div class="spot"><div><span class="nm">钻石沙滩 / Svartifoss 玄武岩瀑布</span> <span class="en">Diamond Beach / Svartifoss</span><p class="ds">沙滩拍浮冰，或 40 分钟车程去斯卡夫塔山徒步看玄武岩瀑布（雷市大教堂原型）</p></div></div></td><td>包车</td><td>2-3h</td><td><span class="st st-free">🆓 免费</span></td></tr>
+    <tr class="food"><td>🍽 晚</td><td><b>Fosshotel 酒店餐厅</b>第二晚（试试龙虾汤以外的菜——中文住客提醒龙虾汤偏腥，鱼和烟熏猪肉好评）· 荒野第二晚蹲极光</td><td>酒店内</td><td>1.5h</td><td><span class="st st-ok">✅ 到店即用</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D5 · 1月15日 周五 · 羽毛峡谷 → 回雷市</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>11:15</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Fja%C3%B0r%C3%A1rglj%C3%BAfur_04.jpg/960px-Fja%C3%B0r%C3%A1rglj%C3%BAfur_04.jpg" alt=""><div><span class="nm">羽毛峡谷</span> <span class="en">Fjaðrárgljúfur</span><p class="ds">南岸最出片的蛇形峡谷，观景台沿崖边走</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Fjadrargljufur">📍 地图</a></div></div></td><td>包车 1h45m（09:30 出发）</td><td>1h</td><td><span class="st st-free">🆓 免费</span></td></tr>
+    <tr><td>中午</td><td><div class="spot"><div><span class="nm">维克镇午餐</span> <span class="en">Vík</span><p class="ds">南岸最大小镇，Black Crust Pizzeria 或 The Soup Company</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Vik+Iceland">📍 地图</a></div></div></td><td>包车 30min</td><td>1h</td><td><span class="st st-free">🆓 随到随吃</span></td></tr>
+    <tr class="food"><td>🍽 19:00</td><td><b>Messinn</b>（铁锅煎鱼专门店，雷市人气王，人均 ~5,000 ISK，每天开，从 EDITION 步行 5 分钟；必点煎鱼鳃）备选：Sjávargrillið 海鲜烧烤</td><td>步行</td><td>1.5h</td><td><span class="st st-todo">⬜ 需订位</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D6 · 1月16日 周六 · 雷市全天</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>上午</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Hallgr%C3%ADmskirkja.jpeg/960px-Hallgr%C3%ADmskirkja.jpeg" alt=""><div><span class="nm">哈尔格林姆大教堂</span> <span class="en">Hallgrímskirkja</span><p class="ds">登顶看彩色屋顶全景，然后逛主街 Laugavegur</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Hallgrimskirkja">📍 地图</a></div></div></td><td>步行/打车</td><td>2-3h</td><td><span class="st st-free">🆓 登顶买票</span></td></tr>
+    <tr><td>下午</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Harpa_harpa_01.jpg/960px-Harpa_harpa_01.jpg" alt=""><div><span class="nm">哈帕音乐厅 + 太阳航海者雕塑</span> <span class="en">Harpa & Sun Voyager</span><p class="ds">蜂巢玻璃外墙（EDITION 隔壁），海边散步</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Harpa+Reykjavik">📍 地图</a></div></div></td><td>步行</td><td>1.5h</td><td><span class="st st-free">🆓 免费</span></td></tr>
+    <tr><td>傍晚</td><td><div class="spot"><div><span class="nm">Sky Lagoon</span><p class="ds">7 步温泉仪式，海景无边池，离市区 10 分钟</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Sky+Lagoon">📍 地图</a></div></div></td><td>打车 10min</td><td>2h</td><td><span class="st st-todo">⬜ 需订时段</span></td></tr>
+    <tr class="food"><td>🍽 20:00</td><td><b>Dill</b>（米其林一星+绿星，冰岛第一家摘星餐厅，Laugavegur 59；🔴 提前 3-4 个月订！5 道 11,900 / 7 道 13,900 ISK，周六营业）备选：ÓX（16 座 chef's table）</td><td>步行/打车</td><td>2.5h</td><td><span class="st st-todo">🔴 急订位</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D7 · 1月17日 周日 · 雷市慵懒日</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>白天</td><td><div class="spot"><div><span class="nm">睡到自然醒 → 咖啡馆 brunch → 查漏补缺</span><p class="ds">Brauð & Co 肉桂卷、Reykjavik Roasters 咖啡；可临时加骑马/直升机观冰川</p></div></div></td><td>步行</td><td>随意</td><td><span class="st st-free">🆓 机动</span></td></tr>
+    <tr class="food"><td>🍽 19:00</td><td><b>Grillmarkaðurinn 烧烤市场</b>（冰岛告别晚餐：熔岩玄武岩装潢，鲸肉/驯鹿/龙虾迷你汉堡组合，品味菜单 10,900 ISK，周日 18:00 开）备选：Sümac（中东 fusion，米其林冲星中）</td><td>步行</td><td>2h</td><td><span class="st st-todo">⬜ 需订位</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D8 · 1月18日 周一 · 飞特罗姆瑟 + 缆车夜景</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>04:30</td><td><div class="spot"><div><span class="nm">KEF → 特罗姆瑟</span> <span class="en">冰岛航空直飞 07:50-12:45</span><p class="ds">04:30 从 EDITION 出发送机，冰岛段包车到此结束</p></div></div></td><td>包车送机 45min</td><td>—</td><td><span class="st st-todo">🔴 急订</span></td></tr>
+    <tr><td>17:00</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/Fjellheisen_starting_point.jpg/960px-Fjellheisen_starting_point.jpg" alt=""><div><span class="nm">Fjellheisen 缆车</span> <span class="en">Fjellheisen Cable Car</span><p class="ds">山顶看全城亮灯+北极教堂夜景，运气好直接看极光</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Fjellheisen">📍 地图</a></div></div></td><td>打车/公交 15min</td><td>1.5h</td><td><span class="st st-free">🆓 现场买</span></td></tr>
+    <tr class="food"><td>🍽 19:30</td><td><b>Fiskekompaniet</b>（港口海鲜 fine dining，帝王蟹/北极红点鲑，€40-80/人，极光季需订位）备选：Bardus Bistro</td><td>步行（酒店在码头）</td><td>2h</td><td><span class="st st-todo">⬜ 需订位</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D9 · 1月19日 周二 · 市区 + 极光追猎团</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>上午</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/NOR-2016-Troms%C3%B8-Arctic_Cathedral_%28Ishavskatedralen%29_01_front.jpg/960px-NOR-2016-Troms%C3%B8-Arctic_Cathedral_%28Ishavskatedralen%29_01_front.jpg" alt=""><div><span class="nm">北极大教堂 + 极地博物馆</span> <span class="en">Arctic Cathedral</span><p class="ds">三角形地标教堂，过桥即达；下午逛街喝咖啡（Kaffebønna）</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Arctic+Cathedral+Tromso">📍 地图</a></div></div></td><td>步行/公交</td><td>2-3h</td><td><span class="st st-free">🆓 门票便宜</span></td></tr>
+    <tr><td>18:00</td><td><div class="spot"><div><span class="nm">极光追猎团</span> <span class="en">Northern Lights Chase</span><p class="ds">小巴追极光约 6 小时，含篝火晚餐+专业摄影跟拍，三晚里最重要项目</p></div></div></td><td>酒店门口集合</td><td>6h</td><td><span class="st st-todo">🔴 急订</span></td></tr>
+    <tr class="food"><td>🍽 午</td><td><b>Mathallen 美食广场</b>（€12-25 快速解决）晚餐跟团篝火餐 · 宵夜可去 Rorbua 传统 pub 喝本地啤酒</td><td>步行</td><td>1h</td><td><span class="st st-free">🆓 免订</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D10 · 1月20日 周三 · 峡湾观鲸</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>白天</td><td><div class="spot"><div><span class="nm">峡湾观鲸</span> <span class="en">Whale Watching</span><p class="ds">冬季大船 5-6h，虎鲸座头鲸都在峡湾里；不想出海可换狗拉雪橇/驯鹿喂食</p></div></div></td><td>码头集合（酒店旁）</td><td>5-6h</td><td><span class="st st-todo">⬜ 行前订</span></td></tr>
+    <tr><td>下午</td><td><div class="spot"><div><span class="nm">Ersfjordbotn 峡湾小镇</span><p class="ds">明信片机位，或直接回酒店休息，晚上码头边蹲极光</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Ersfjordbotn">📍 地图</a></div></div></td><td>打车 20min</td><td>1-2h</td><td><span class="st st-free">🆓 机动</span></td></tr>
+    <tr class="food"><td>🍽 晚</td><td><b>Bardus Bistro</b>（本地人的最爱，€30-60，汉堡/鱼都出色，建议订位）或 <b>Emma's Drømmekjøkken</b>（浪漫挪威菜 €50-100，必须提前订）</td><td>步行</td><td>1.5h</td><td><span class="st st-todo">⬜ 需订位</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D11 · 1月21日 周四 · 飞奥斯陆 + 歌剧院</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>早班</td><td><div class="spot"><div><span class="nm">TOS → OSL 早班机</span><p class="ds">约 07:00 飞 09:00 到（2h），机场快线 20 分钟进城</p></div></div></td><td>飞机+机场快线</td><td>—</td><td><span class="st st-todo">⬜ 未订</span></td></tr>
+    <tr><td>下午</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Oslo_Opera_House_-_2025.jpg/960px-Oslo_Opera_House_-_2025.jpg" alt=""><div><span class="nm">奥斯陆歌剧院 + Barcode 海滨区</span> <span class="en">Oslo Opera House</span><p class="ds">可以走上屋顶的白色冰川建筑，免费</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Oslo+Opera+House">📍 地图</a></div></div></td><td>步行</td><td>1.5h</td><td><span class="st st-free">🆓 免费</span></td></tr>
+    <tr class="food"><td>🍽 晚</td><td><b>TAK Oslo</b>（就在 Sommerro 酒店屋顶的日料，俯瞰全城夜景，入住当晚最省事）备选：酒店 Ekspedisjonshallen 大厅餐厅（早餐是全奥斯陆最出片的）</td><td>酒店内</td><td>2h</td><td><span class="st st-todo">⬜ 需订位</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D12 · 1月22日 周五 · 蒙克美术馆 + 潮店街区</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>上午</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/MUNCH_Museum_front_%282020%29_4.jpg/960px-MUNCH_Museum_front_%282020%29_4.jpg" alt=""><div><span class="nm">蒙克美术馆</span> <span class="en">MUNCH</span><p class="ds">《呐喊》每天换一幅展出，13 层新馆</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=MUNCH+museum+Oslo">📍 地图</a></div></div></td><td>电车/步行</td><td>2h</td><td><span class="st st-todo">⬜ 网上购票</span></td></tr>
+    <tr><td>中午</td><td><div class="spot"><div><span class="nm">Grünerløkka 潮店街区</span><p class="ds">奥斯陆最时髦街区：古着、独立设计、咖啡馆，午餐随便挑</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Grunerlokka+Oslo">📍 地图</a></div></div></td><td>电车</td><td>2-3h</td><td><span class="st st-free">🆓 逛街</span></td></tr>
+    <tr class="food"><td>🍽 19:30</td><td><b>Kontrast</b>（米其林二星+绿星，Vulkan 区，北欧风味的告别大餐，1,600-2,000 NOK/人，周三-周六开，🔴 提前 3-6 周订）备选：Statholdergaarden（二星古典法挪菜）· ⚠️ 三星 Maaemo 2026 年搬址停业中，订前核实是否重开</td><td>电车/打车</td><td>3h</td><td><span class="st st-todo">🔴 急订位</span></td></tr>
+  </table>
+  </div>
+
+  <div class="day">
+  <h2>D13 · 1月23日 周六 · 回国</h2>
+  <table>
+    <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
+    <tr><td>09:45</td><td><div class="spot"><div><span class="nm">你：奥斯陆机场 → 海航 12:30 飞北京</span><p class="ds">早起退房，次日 04:30 到首都机场</p></div></div></td><td>机场快线/打车 45min</td><td>—</td><td><span class="st st-wait">⏳ 报价中</span></td></tr>
+    <tr><td>下午</td><td><div class="spot"><div><span class="nm">朋友：多待半天 → 卡航 15:05 飞杭州</span><p class="ds">多哈转机 2h50m，1/24 15:25 到杭州</p></div></div></td><td>机场快线</td><td>—</td><td><span class="st st-wait">⏳ 报价中</span></td></tr>
+  </table>
+  </div>
+
+  <p class="footer">价格口径：$1≈¥7.1 · 调研日期 2026-09-22 · 1 月旺季一切以下单为准 · 餐厅营业状态出发前再核实一次</p>
+</div>
+
+<!-- ① CSS -->
+<style>
+  #editbar {
+    position:fixed; left:0; right:0; bottom:0; background:#1e3a5a; color:#fff;
+    padding:9px 14px; display:flex; gap:8px; align-items:center; z-index:99;
+    font-size:12.5px; flex-wrap:wrap; box-shadow:0 -2px 10px rgba(0,0,0,.15);
+  }
+  #editbar button {
+    background:#fff; color:#1e3a5a; border:none; border-radius:6px;
+    padding:5px 12px; font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  #editbar button:hover { background:#dce8ee; }
+  #editnote { opacity:.85; font-size:12px; display:none; }
+  body.editing #editnote { display:inline; }
+  body.editing td { outline:1px dashed #c9a24b; outline-offset:-1px; cursor:text; }
+</style>
+
+<!-- ② 工具栏（放在页面底部） -->
+<div id="editbar">
+  <button id="btnEdit">✏️ 编辑模式</button>
+  <button id="btnExport" style="display:none">📤 导出变更（备用）</button>
+  <button id="btnReset" style="display:none">🔁 重置修改</button>
+  <span id="editnote">✅ 编辑中：直接点表格文字改，<b>改动自动云端同步</b>，对方刷新页面就能看到。</span>
+  <span id="syncstat" style="margin-left:auto;opacity:.9;font-size:12px">☁️ …</span>
+</div>
+
+<!-- ③ 同步脚本 -->
+<script>
+(function(){
+  const KEY='iceland-norway-2027-edits-v1';
+  const NOSTR_SK='f77c64315c66c68ae9c09d19b5e062fece4ffd796a4584e284054cbb760d1c6d';
+  const NOSTR_PK='c57112187e8fe30fb8584e797517a07f3afba35c6344538bc842eb30b18f89b7';
+  const DTAG='iceland-norway-2027-board';
+  const RELAYS=['wss://relay.damus.io','wss://nos.lol','wss://nostr.mom','wss://offchain.pub'];
+  const CDNS=['https://cdn.jsdelivr.net/npm/nostr-tools@2.13.0/+esm','https://unpkg.com/nostr-tools@2.13.0/+esm'];
+
+  const tables=[...document.querySelectorAll('table')];
+  const stat=document.getElementById('syncstat');
+  let localStamp=0, cloudStamp=0, putTimer=null, NT=null, pool=null;
+
+  function setStat(t){ if(stat) stat.textContent=t; }
+  function applyObj(obj){
+    tables.forEach((t,i)=>{ if(obj && obj[i]){ try{ t.innerHTML=obj[i]; }catch(e){} } });
+  }
+  function collectObj(){
+    const o={}; tables.forEach((t,i)=>{ o[i]=t.innerHTML; }); return o;
+  }
+  function saveLocal(){
+    tables.forEach((t,i)=>localStorage.setItem(KEY+'-'+i,t.innerHTML));
+    localStamp=Date.now();
+    localStorage.setItem(KEY+'-meta',String(localStamp));
+  }
+
+  // 先用本机缓存渲染（秒开）
+  try{ localStamp=parseInt(localStorage.getItem(KEY+'-meta')||'0',10)||0; }catch(e){}
+  tables.forEach((t,i)=>{
+    const saved=localStorage.getItem(KEY+'-'+i);
+    if(saved){ try{ t.innerHTML=saved; }catch(e){} }
+  });
+
+  // 连接云端：谁新用谁
+  setStat('☁️ 正在连接云端…');
+  (async()=>{
+    for(const c of CDNS){ try{ NT=await import(c); break; }catch(e){} }
+    if(!NT){ setStat('⚠️ 同步组件加载失败 · 改动只存本机'); return; }
+    try{
+      pool=new NT.SimplePool();
+      // 关键：默认连接超时 4.4s 在国内网络会误杀，必须放宽
+      await Promise.allSettled(RELAYS.map(u=>pool.ensureRelay(u,{connectionTimeout:25000})));
+      const query=pool.querySync(RELAYS,{kinds:[30078],authors:[NOSTR_PK],'#d':[DTAG]},{maxWait:25000});
+      const evs=await Promise.race([query,new Promise(r=>setTimeout(()=>r([]),30000))]);
+      const latest=(evs||[]).sort((a,b)=>b.created_at-a.created_at)[0];
+      if(latest){
+        const d=JSON.parse(latest.content||'{}');
+        cloudStamp=Date.parse(d.updatedAt||'')||0;
+        if(d.tables && cloudStamp>localStamp){
+          applyObj(d.tables);
+          tables.forEach((t,i)=>localStorage.setItem(KEY+'-'+i,t.innerHTML));
+          localStamp=cloudStamp;
+          localStorage.setItem(KEY+'-meta',String(cloudStamp));
+        }
+        const when=d.updatedAt?new Date(d.updatedAt).toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+        setStat('☁️ 已同步'+(when?' · 最近保存 '+when:''));
+      }else{
+        setStat('☁️ 已连接');
+      }
+      if(localStamp>cloudStamp) pushCloud(); // 本机有未同步改动，补推
+    }catch(e){ setStat('⚠️ 云端暂不可用 · 改动先存本机'); }
+  })();
+
+  async function pushCloud(){
+    if(!NT||!pool){ setStat('⚠️ 云端未连接 · 已存本机'); return; }
+    setStat('☁️ 同步中…');
+    try{
+      await Promise.allSettled(RELAYS.map(u=>pool.ensureRelay(u,{connectionTimeout:25000})));
+      const sk=Uint8Array.from(NOSTR_SK.match(/../g).map(h=>parseInt(h,16)));
+      const ev=NT.finalizeEvent({
+        kind:30078, created_at:Math.floor(Date.now()/1000), tags:[['d',DTAG]],
+        content:JSON.stringify({tables:collectObj(),updatedAt:new Date().toISOString()})
+      },sk);
+      const rs=await Promise.allSettled(pool.publish(RELAYS,ev));
+      if(rs.some(r=>r.status==='fulfilled')){ cloudStamp=Date.now(); setStat('☁️ 已同步 · 对方刷新可见'); }
+      else setStat('⚠️ 同步失败 · 已存本机，重新打开会自动补同步');
+    }catch(e){ setStat('⚠️ 同步失败 · 已存本机'); }
+  }
+
+  let editOn=false;
+  const bE=document.getElementById('btnEdit'),
+        bX=document.getElementById('btnExport'),
+        bR=document.getElementById('btnReset');
+
+  function setEdit(on){
+    editOn=on;
+    document.body.classList.toggle('editing',on);
+    document.querySelectorAll('td').forEach(td=>{
+      td.contentEditable = on ? 'plaintext-only' : 'false';
+    });
+    bE.textContent = on ? '✅ 完成编辑' : '✏️ 编辑模式';
+    bX.style.display = on ? '' : 'none';
+    bR.style.display = on ? '' : 'none';
+  }
+  bE.onclick=()=>setEdit(!editOn);
+
+  document.addEventListener('input',e=>{
+    if(!editOn) return;
+    if(!e.target.closest('table')) return;
+    saveLocal();
+    clearTimeout(putTimer);
+    putTimer=setTimeout(pushCloud,1000);
+  });
+
+  // 备用：把第一张表（约定为"总表"）导出为文本清单
+  bX.onclick=()=>{
+    const master=tables[0];
+    const lines=['📒 更新（'+new Date().toLocaleString('zh-CN')+'）',''];
+    [...master.querySelectorAll('tr')].slice(1).forEach(tr=>{
+      const c=[...tr.querySelectorAll('td')].map(td=>td.innerText.trim().replace(/\s+/g,' '));
+      if(c.length>=3) lines.push('• '+c[0]+' ｜ '+c[2]+(c[3]?' ｜ '+c[3]:''));
+    });
+    const txt=lines.join('\n');
+    (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject())
+      .then(()=>{ bX.textContent='✅ 已复制'; setTimeout(()=>bX.textContent='📤 导出变更（备用）',2500); })
+      .catch(()=>{ prompt('复制下面内容：',txt); });
+  };
+
+  bR.onclick=async()=>{
+    if(confirm('确定清除全部修改，恢复成发布时的版本？（云端也会一起清掉）')){
+      tables.forEach((t,i)=>localStorage.removeItem(KEY+'-'+i));
+      localStorage.removeItem(KEY+'-meta');
+      if(NT&&pool){
+        try{
+          await Promise.allSettled(RELAYS.map(u=>pool.ensureRelay(u,{connectionTimeout:25000})));
+          const sk=Uint8Array.from(NOSTR_SK.match(/../g).map(h=>parseInt(h,16)));
+          const ev=NT.finalizeEvent({kind:30078,created_at:Math.floor(Date.now()/1000),tags:[['d',DTAG]],
+            content:JSON.stringify({tables:{},updatedAt:new Date().toISOString()})},sk);
+          await Promise.allSettled(pool.publish(RELAYS,ev));
+        }catch(e){}
+      }
+      location.reload();
+    }
+  };
+})();
+</script>
+</body>
+</html>
