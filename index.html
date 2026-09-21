@@ -6,23 +6,55 @@
 <title>冰岛+挪威 13 天 · 协作看板</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: #f4f6f8; color: #22303c; line-height: 1.55; padding-bottom: 70px; }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 20px 16px; }
-  h1 { font-size: 22px; margin-bottom: 4px; }
-  .sub { color: #6b7a88; font-size: 13.5px; margin-bottom: 14px; }
-  .tip { background: #fff8e6; border: 1px solid #ecd28a; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 18px; }
-  h2 { font-size: 16.5px; margin: 22px 0 8px; padding-left: 9px; border-left: 4px solid #1e6fa8; }
-  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 10px; font-size: 13.5px; }
-  th { background: #1e3a5a; color: #fff; text-align: left; padding: 8px 10px; font-size: 12.5px; font-weight: 600; }
-  td { border-top: 1px solid #e6eaee; padding: 8px 10px; vertical-align: top; }
+  html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+  body { font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: #eef2f6; color: #22303c; line-height: 1.55; padding-bottom: 78px; }
+
+  /* ===== 顶部横幅 ===== */
+  .hero { background: linear-gradient(135deg,#16293e 0%,#1e3a5a 55%,#28536e 100%); color:#fff; padding: 26px 16px 60px; }
+  .hero-in { max-width: 980px; margin: 0 auto; }
+  .hero h1 { font-size: 24px; letter-spacing:.5px; margin-bottom: 6px; }
+  .hero .route { font-size: 14px; opacity:.92; margin-bottom: 14px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; }
+  .chip { background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.22); border-radius:20px; padding:3px 12px; font-size:12.5px; }
+
+  /* ===== 吸顶导航 ===== */
+  .nav { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.94); backdrop-filter: blur(8px); border-bottom:1px solid #dde4ea; box-shadow:0 2px 8px rgba(20,40,60,.06); }
+  .nav-in { max-width:980px; margin:0 auto; padding:8px 12px; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; }
+  .nav-in::-webkit-scrollbar{ display:none; }
+  .nav a { flex-shrink:0; font-size:12.5px; font-weight:600; color:#41576b; text-decoration:none; padding:4px 11px; border-radius:14px; background:#eef2f6; }
+  .nav a:hover { background:#dce8ee; color:#1e3a5a; }
+  .nav a.hot { background:#fdeaea; color:#b3382e; }
+
+  .wrap { max-width: 980px; margin: -38px auto 0; padding: 0 16px; position:relative; z-index:2; }
+
+  /* ===== 提示条 ===== */
+  .tip { background:#fff; border-radius:12px; box-shadow:0 4px 16px rgba(20,40,60,.10); padding:13px 16px; font-size:13px; margin-bottom:22px; }
+  .tip b { color:#1e3a5a; }
+  .tip .prio { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:6px; }
+  .tip .prio span{ white-space:nowrap; }
+
+  /* ===== 分区标题 ===== */
+  .sec { display:flex; align-items:baseline; gap:10px; margin:26px 0 10px; }
+  .sec h2 { font-size:18px; color:#1e3a5a; }
+  .sec .hint { font-size:12.5px; color:#7d8b98; }
+
+  /* ===== 表格卡片 ===== */
+  table { width: 100%; border-collapse: separate; border-spacing:0; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(20,40,60,.07); margin-bottom: 12px; font-size: 13.5px; }
+  th { background: #1e3a5a; color: #fff; text-align: left; padding: 9px 12px; font-size: 12.5px; font-weight: 600; letter-spacing:.3px; }
+  td { border-top: 1px solid #edf1f4; padding: 10px 12px; vertical-align: middle; }
   tr:first-child td { border-top: none; }
-  .st { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  tbody tr:hover td, tr:hover td { background:#f6f9fb; }
+
+  /* 状态徽章 */
+  .st { display: inline-block; padding: 2px 9px; border-radius: 11px; font-size: 12px; font-weight: 600; white-space: nowrap; }
   .st-ok { background: #e3f5e9; color: #1c7a3d; }
   .st-todo { background: #fdeaea; color: #b3382e; }
   .st-wait { background: #fff3d6; color: #9a6b00; }
   .st-free { background: #e8eef5; color: #4a6274; }
+
+  /* 景点 */
   .spot { display: flex; gap: 10px; align-items: flex-start; }
-  .spot img { width: 108px; height: 72px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .spot img { width: 96px; height: 64px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
   .spot .nm { font-weight: 700; }
   .spot .en { color: #8a97a3; font-size: 12px; font-weight: 400; }
   .spot .ds { color: #54626e; font-size: 12.5px; margin-top: 2px; }
@@ -30,30 +62,75 @@
   a:hover { text-decoration: underline; }
   .map { font-size: 12px; white-space: nowrap; }
   .blank { color: #b0bcc6; letter-spacing: 1px; }
-  .day { break-inside: avoid; page-break-inside: avoid; }
-  .food td { background: #fbf7ee; }
-  .small { font-size: 12.5px; color: #54626e; }
-  .footer { margin-top: 26px; padding-top: 12px; border-top: 1px solid #dde3e8; color: #8a97a3; font-size: 12.5px; }
+
+  /* ===== 每日卡片 ===== */
+  .day { background:#fff; border-radius:14px; box-shadow:0 2px 10px rgba(20,40,60,.07); margin-bottom:16px; overflow:hidden; break-inside:avoid; page-break-inside:avoid; }
+  .day-hd { display:flex; align-items:center; gap:12px; padding:12px 16px; color:#fff; }
+  .day-hd .dnum { background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.3); border-radius:9px; font-weight:800; font-size:14px; padding:2px 9px; flex-shrink:0; }
+  .day-hd .dt { font-size:12.5px; opacity:.85; flex-shrink:0; }
+  .day-hd .tt { font-weight:700; font-size:15px; }
+  .is .day-hd { background:linear-gradient(90deg,#1e6fa8,#2f8ac4); }   /* 冰岛 */
+  .no .day-hd { background:linear-gradient(90deg,#5b4a8a,#7a5fb5); }   /* 挪威北部 */
+  .os .day-hd { background:linear-gradient(90deg,#1c7a3d,#3a9d5d); }   /* 奥斯陆 */
+  .day table { box-shadow:none; border-radius:0; margin-bottom:0; }
+  .food td { background: #fdf9ef; }
+  .food:hover td { background:#faf3e0 !important; }
+  .food td:first-child { border-left:3px solid #e0b64f; }
+
+  .footer { margin-top: 26px; padding: 12px 4px 0; border-top: 1px solid #dde3e8; color: #8a97a3; font-size: 12.5px; }
+
   @media print {
     body { background: #fff; padding-bottom: 0; }
-    #editbar { display: none !important; }
+    .nav, #editbar { display: none !important; }
+    .hero { padding: 10px 0 14px; background:#fff; color:#000; }
+    .hero .route { color:#333; }
+    .chip { border:1px solid #999; color:#333; background:#fff; }
+    .wrap { margin-top: 0; }
+    .day, table { box-shadow:none; border:1px solid #ccc; }
+    .day-hd { background:#eee !important; color:#000; }
+    .day-hd .dnum { border-color:#999; background:#fff; }
     .day { break-inside: avoid; page-break-inside: avoid; }
-    h2 { break-after: avoid; }
+    .sec { break-after: avoid; }
     @page { margin: 12mm 10mm; }
-    .tip { border: 1px solid #ccc; }
+    .tip { border: 1px solid #ccc; box-shadow:none; }
   }
 </style>
 </head>
 <body>
+
+<div class="hero">
+  <div class="hero-in">
+    <h1>🇮🇸🇳🇴 冰岛 + 挪威 13 天 · 协作看板</h1>
+    <p class="route">2027年1月11日（周一）出发 → 1月23日（周六）回程 · 朋友组队 · 休闲度假 · 冰岛段全程包车+私导</p>
+    <div class="chips">
+      <span class="chip">🗓 13 天 12 晚</span>
+      <span class="chip">🏨 5 家酒店</span>
+      <span class="chip">✈️ 4 段航班</span>
+      <span class="chip">🍽 5 顿重头戏餐厅</span>
+      <span class="chip">🔴 4 件急订</span>
+    </div>
+  </div>
+</div>
+
+<div class="nav"><div class="nav-in">
+  <a href="#master" class="hot">📒 总表</a>
+  <a href="#todo" class="hot">👩‍💼 助理待办</a>
+  <a href="#d1">D1 蓝湖</a><a href="#d2">D2 黄金圈</a><a href="#d3">D3 南岸</a><a href="#d4">D4 蓝冰洞</a><a href="#d5">D5 回雷市</a><a href="#d6">D6 雷市</a><a href="#d7">D7 慵懒日</a><a href="#d8">D8 飞挪威</a><a href="#d9">D9 极光团</a><a href="#d10">D10 观鲸</a><a href="#d11">D11 奥斯陆</a><a href="#d12">D12 蒙克</a><a href="#d13">D13 回国</a>
+</div></div>
+
 <div class="wrap">
-  <h1>🇮🇸🇳🇴 冰岛 + 挪威 13 天 · 协作看板</h1>
-  <p class="sub">2027年1月11日（周一）出发 → 1月23日（周六）回程 · 12 晚 · 朋友组队 · 休闲度假 · 全程包车+私导（冰岛段）</p>
 
   <div class="tip">
-    📌 <b>预订原则</b>：🔴 最先抢蓝冰洞团（1/14）+ 1/18 直飞 + The Retreat + Dill 餐厅（提前 3-4 个月）；🟡 酒店等 2026年10-12月陆续订（EDITION 万豪 2026年1月底才开售）；🟢 观鲸/缆车/Sky Lagoon 行前 1-2 个月订。价格为 2026-09-22 调研口径，1 月旺季以下单为准。<b>本页可直接改：点底部「编辑模式」，改动自动云端同步；打印/存 PDF 请用浏览器 Cmd+P。</b>
+    📌 <b>怎么用这页</b>：点底部「✏️ 编辑模式」直接改表格，改动自动云端同步；打印/存 PDF 用浏览器 Cmd+P（首次打开请强刷 Cmd+Shift+R）。
+    <div class="prio">
+      <span>🔴 <b>最先抢</b>：蓝冰洞团(1/14) · 1/18直飞 · The Retreat · Dill</span>
+      <span>🟡 <b>10-12月订</b>：酒店（EDITION 2026年1月底才开售）</span>
+      <span>🟢 <b>行前订</b>：观鲸 · 缆车 · Sky Lagoon</span>
+    </div>
+    <div style="margin-top:6px;color:#8a97a3;font-size:12px">价格为 2026-09-22 调研口径，1 月旺季以下单为准。</div>
   </div>
 
-  <h2>📒 总表（预订状态一览）</h2>
+  <div class="sec" id="master"><h2>📒 总表 · 预订状态一览</h2><span class="hint">确认号直接填在留白处</span></div>
   <table>
     <tr><th style="width:22%">项目</th><th style="width:22%">日期 · 时间</th><th style="width:12%">状态</th><th>预约入口 / 备注（确认号留白）</th></tr>
     <tr><td>✈️ 去程 · 国航商务</td><td>1/11 周一 03:30 → 11:15</td><td><span class="st st-wait">⏳ 报价中</span></td><td>经停哥本哈根 2h15m · ¥13,600-14,800/人 · 1/10 周日深夜到机场 · 确认号 <span class="blank">______</span></td></tr>
@@ -76,17 +153,17 @@
     <tr><td>🍽 餐厅订位（5 顿重头戏）</td><td>见每日表 🍽 行</td><td><span class="st st-todo">⬜ 未订</span></td><td>🔴 Moss（1/11）· Dill（1/16，提前 3-4 个月！）· Grillmarkaðurinn（1/17）· Fiskekompaniet（1/18）· Kontrast（1/22，提前 3-6 周）</td></tr>
   </table>
 
-  <h2>👩‍💼 助理待办（等待确认）</h2>
+  <div class="sec" id="todo"><h2>👩‍💼 助理待办 · 等待确认</h2><span class="hint">结果回填到最后一列</span></div>
   <table>
     <tr><th style="width:22%">任务</th><th style="width:26%">要求</th><th style="width:12%">状态</th><th>执行说明 / 结果回填</th></tr>
     <tr><td>1️⃣ 包车比价</td><td>冰岛 7 天（1/11 接机 - 1/18 送机）含私导，冬季四驱大车</td><td><span class="st st-wait">⏳ 进行中</span></td><td>至少 3 家比价：① Guide to Iceland 私导包车 ② 华人司导（小红书/携程）③ 当地公司（如 Your Day Tours / Nordic Visitor）· 要求报总价+含不含司机食宿+冬季胎 · 结果：<span class="blank">______</span></td></tr>
     <tr><td>2️⃣ 酒店房价比价</td><td>5 家酒店按实际入住日期比价</td><td><span class="st st-wait">⏳ 进行中</span></td><td>每家查 3 渠道：官网 vs Booking vs Trip.com/携程，截图留档 · 注意：Retreat 只能官网；EDITION 2026年1月底才开售；Scandic 先注册会员；Fosshotel 不升海景房 · 结果：<span class="blank">______</span></td></tr>
   </table>
 
-  <h2>🗓 每日行程 + 晚餐推荐</h2>
+  <div class="sec"><h2>🗓 每日行程 + 晚餐推荐</h2><span class="hint">米色行 = 餐厅 · 蓝=冰岛 紫=特罗姆瑟 绿=奥斯陆</span></div>
 
-  <div class="day">
-  <h2>D1 · 1月11日 周一 · 抵达 + 蓝湖</h2>
+  <div class="day is">
+    <div class="day-hd" id="d1"><span class="dnum">D1</span><span class="dt">1月11日 周一</span><span class="tt">抵达 + 蓝湖</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>11:15</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Refleksjoner.jpg/960px-Refleksjoner.jpg" alt=""><div><span class="nm">凯夫拉维克机场 → The Retreat</span> <span class="en">KEF → Blue Lagoon</span><p class="ds">落地后直接进蓝湖度假区，私汤倒时差，零光害夜里可看极光</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Blue+Lagoon+Iceland">📍 地图</a></div></div></td><td>包车接机 20 分钟</td><td>下午+晚上</td><td><span class="st st-wait">⏳ 酒店待订</span></td></tr>
@@ -94,8 +171,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D2 · 1月12日 周二 · 蓝湖 + 黄金圈</h2>
+  <div class="day is">
+    <div class="day-hd" id="d2"><span class="dnum">D2</span><span class="dt">1月12日 周二</span><span class="tt">蓝湖 + 黄金圈</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>上午</td><td><div class="spot"><div><span class="nm">蓝湖大温泉</span> <span class="en">Blue Lagoon</span><p class="ds">住客含票，可约水中按摩</p></div></div></td><td>酒店内</td><td>2-3h</td><td><span class="st st-ok">✅ 含在房费</span></td></tr>
@@ -105,8 +182,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D3 · 1月13日 周三 · 南岸瀑布 → 黑沙滩 → 冰河湖日落</h2>
+  <div class="day is">
+    <div class="day-hd" id="d3"><span class="dnum">D3</span><span class="dt">1月13日 周三</span><span class="tt">南岸瀑布 → 黑沙滩 → 冰河湖日落</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>11:00</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Seljalandsfoss_Waterfall%2C_Iceland%2C_20240720_1500_3096.jpg/960px-Seljalandsfoss_Waterfall%2C_Iceland%2C_20240720_1500_3096.jpg" alt=""><div><span class="nm">塞里雅兰瀑布</span> <span class="en">Seljalandsfoss</span><p class="ds">可以走到水帘后面的瀑布（冬季注意结冰）</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Seljalandsfoss">📍 地图</a></div></div></td><td>包车沿 1 号公路</td><td>45min</td><td><span class="st st-free">🆓 免费</span></td></tr>
@@ -117,8 +194,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D4 · 1月14日 周四 · 蓝冰洞（全程重头戏）</h2>
+  <div class="day is">
+    <div class="day-hd" id="d4"><span class="dnum">D4</span><span class="dt">1月14日 周四</span><span class="tt">蓝冰洞（全程重头戏）</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>09:30</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/Ice_Cave_Explorer_-_Iceland.jpg/960px-Ice_Cave_Explorer_-_Iceland.jpg" alt=""><div><span class="nm">蓝冰洞团</span> <span class="en">Ice Cave Tour</span><p class="ds">瓦特纳冰川蓝冰洞，冰河湖停车场集合，约 3 小时 ⚠️ 天气取消则改 1/15 早 9:30 保底</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Jokulsarlon+parking">📍 地图</a></div></div></td><td>包车 25min</td><td>3h</td><td><span class="st st-todo">🔴 急订</span></td></tr>
@@ -127,8 +204,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D5 · 1月15日 周五 · 羽毛峡谷 → 回雷市</h2>
+  <div class="day is">
+    <div class="day-hd" id="d5"><span class="dnum">D5</span><span class="dt">1月15日 周五</span><span class="tt">羽毛峡谷 → 回雷市</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>11:15</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Fja%C3%B0r%C3%A1rglj%C3%BAfur_04.jpg/960px-Fja%C3%B0r%C3%A1rglj%C3%BAfur_04.jpg" alt=""><div><span class="nm">羽毛峡谷</span> <span class="en">Fjaðrárgljúfur</span><p class="ds">南岸最出片的蛇形峡谷，观景台沿崖边走</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Fjadrargljufur">📍 地图</a></div></div></td><td>包车 1h45m（09:30 出发）</td><td>1h</td><td><span class="st st-free">🆓 免费</span></td></tr>
@@ -137,8 +214,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D6 · 1月16日 周六 · 雷市全天</h2>
+  <div class="day is">
+    <div class="day-hd" id="d6"><span class="dnum">D6</span><span class="dt">1月16日 周六</span><span class="tt">雷市全天</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>上午</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/Hallgr%C3%ADmskirkja.jpeg/960px-Hallgr%C3%ADmskirkja.jpeg" alt=""><div><span class="nm">哈尔格林姆大教堂</span> <span class="en">Hallgrímskirkja</span><p class="ds">登顶看彩色屋顶全景，然后逛主街 Laugavegur</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Hallgrimskirkja">📍 地图</a></div></div></td><td>步行/打车</td><td>2-3h</td><td><span class="st st-free">🆓 登顶买票</span></td></tr>
@@ -148,8 +225,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D7 · 1月17日 周日 · 雷市慵懒日</h2>
+  <div class="day is">
+    <div class="day-hd" id="d7"><span class="dnum">D7</span><span class="dt">1月17日 周日</span><span class="tt">雷市慵懒日</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>白天</td><td><div class="spot"><div><span class="nm">睡到自然醒 → 咖啡馆 brunch → 查漏补缺</span><p class="ds">Brauð & Co 肉桂卷、Reykjavik Roasters 咖啡；可临时加骑马/直升机观冰川</p></div></div></td><td>步行</td><td>随意</td><td><span class="st st-free">🆓 机动</span></td></tr>
@@ -157,8 +234,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D8 · 1月18日 周一 · 飞特罗姆瑟 + 缆车夜景</h2>
+  <div class="day no">
+    <div class="day-hd" id="d8"><span class="dnum">D8</span><span class="dt">1月18日 周一</span><span class="tt">飞特罗姆瑟 + 缆车夜景</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>04:30</td><td><div class="spot"><div><span class="nm">KEF → 特罗姆瑟</span> <span class="en">冰岛航空直飞 07:50-12:45</span><p class="ds">04:30 从 EDITION 出发送机，冰岛段包车到此结束</p></div></div></td><td>包车送机 45min</td><td>—</td><td><span class="st st-todo">🔴 急订</span></td></tr>
@@ -167,8 +244,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D9 · 1月19日 周二 · 市区 + 极光追猎团</h2>
+  <div class="day no">
+    <div class="day-hd" id="d9"><span class="dnum">D9</span><span class="dt">1月19日 周二</span><span class="tt">市区 + 极光追猎团</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>上午</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/NOR-2016-Troms%C3%B8-Arctic_Cathedral_%28Ishavskatedralen%29_01_front.jpg/960px-NOR-2016-Troms%C3%B8-Arctic_Cathedral_%28Ishavskatedralen%29_01_front.jpg" alt=""><div><span class="nm">北极大教堂 + 极地博物馆</span> <span class="en">Arctic Cathedral</span><p class="ds">三角形地标教堂，过桥即达；下午逛街喝咖啡（Kaffebønna）</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=Arctic+Cathedral+Tromso">📍 地图</a></div></div></td><td>步行/公交</td><td>2-3h</td><td><span class="st st-free">🆓 门票便宜</span></td></tr>
@@ -177,8 +254,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D10 · 1月20日 周三 · 峡湾观鲸</h2>
+  <div class="day no">
+    <div class="day-hd" id="d10"><span class="dnum">D10</span><span class="dt">1月20日 周三</span><span class="tt">峡湾观鲸</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>白天</td><td><div class="spot"><div><span class="nm">峡湾观鲸</span> <span class="en">Whale Watching</span><p class="ds">冬季大船 5-6h，虎鲸座头鲸都在峡湾里；不想出海可换狗拉雪橇/驯鹿喂食</p></div></div></td><td>码头集合（酒店旁）</td><td>5-6h</td><td><span class="st st-todo">⬜ 行前订</span></td></tr>
@@ -187,8 +264,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D11 · 1月21日 周四 · 飞奥斯陆 + 歌剧院</h2>
+  <div class="day os">
+    <div class="day-hd" id="d11"><span class="dnum">D11</span><span class="dt">1月21日 周四</span><span class="tt">飞奥斯陆 + 歌剧院</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>早班</td><td><div class="spot"><div><span class="nm">TOS → OSL 早班机</span><p class="ds">约 07:00 飞 09:00 到（2h），机场快线 20 分钟进城</p></div></div></td><td>飞机+机场快线</td><td>—</td><td><span class="st st-todo">⬜ 未订</span></td></tr>
@@ -197,8 +274,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D12 · 1月22日 周五 · 蒙克美术馆 + 潮店街区</h2>
+  <div class="day os">
+    <div class="day-hd" id="d12"><span class="dnum">D12</span><span class="dt">1月22日 周五</span><span class="tt">蒙克美术馆 + 潮店街区</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>上午</td><td><div class="spot"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/MUNCH_Museum_front_%282020%29_4.jpg/960px-MUNCH_Museum_front_%282020%29_4.jpg" alt=""><div><span class="nm">蒙克美术馆</span> <span class="en">MUNCH</span><p class="ds">《呐喊》每天换一幅展出，13 层新馆</p><a class="map" href="https://www.google.com/maps/search/?api=1&query=MUNCH+museum+Oslo">📍 地图</a></div></div></td><td>电车/步行</td><td>2h</td><td><span class="st st-todo">⬜ 网上购票</span></td></tr>
@@ -207,8 +284,8 @@
   </table>
   </div>
 
-  <div class="day">
-  <h2>D13 · 1月23日 周六 · 回国</h2>
+  <div class="day os">
+    <div class="day-hd" id="d13"><span class="dnum">D13</span><span class="dt">1月23日 周六</span><span class="tt">回国</span></div>
   <table>
     <tr><th style="width:14%">时间</th><th style="width:38%">去哪</th><th style="width:20%">怎么去</th><th style="width:12%">花多久</th><th style="width:16%">状态</th></tr>
     <tr><td>09:45</td><td><div class="spot"><div><span class="nm">你：奥斯陆机场 → 海航 12:30 飞北京</span><p class="ds">早起退房，次日 04:30 到首都机场</p></div></div></td><td>机场快线/打车 45min</td><td>—</td><td><span class="st st-wait">⏳ 报价中</span></td></tr>
@@ -244,6 +321,11 @@
   <span id="editnote">✅ 编辑中：直接点表格文字改，<b>改动自动云端同步</b>，对方刷新页面就能看到。</span>
   <span id="syncstat" style="margin-left:auto;opacity:.9;font-size:12px">☁️ …</span>
 </div>
+
+<script>
+  // 图片懒加载（不改表格 HTML，避免影响同步快照）
+  document.querySelectorAll('table img').forEach(im=>{ im.loading='lazy'; });
+</script>
 
 <!-- ③ 同步脚本 -->
 <script>
