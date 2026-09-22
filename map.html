@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冰岛 × 挪威 · 北极圈 13 天 · 动画行程</title>
+<style>
+  :root {
+    --skyT: #0b1026; --skyB: #1b2340;
+    --gold: #d8b26a; --gold-dim: rgba(216,178,106,.4);
+    --aurora: #7dffb2;
+    --ink: #e8e2d2; --ink-dim: #9aa3b8;
+    --panel: rgba(9,14,30,.78);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { height:100%; }
+  body {
+    font-family:"Songti SC","STSong","Noto Serif SC",serif;
+    background:linear-gradient(180deg,var(--skyT),var(--skyB));
+    color:var(--ink); overflow:hidden;
+    transition:background 1.2s linear;
+  }
+  /* 颗粒质感 */
+  body::after {
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:50;
+    opacity:.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  #app { display:flex; flex-direction:column; height:100vh; }
+
+  /* ── 顶部 ── */
+  header {
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding:18px 28px 10px; flex-wrap:wrap; gap:8px;
+  }
+  .brand h1 { font-size:26px; letter-spacing:2px; font-weight:700; text-shadow:0 1px 10px rgba(9,14,30,.65), 0 0 2px rgba(9,14,30,.5); }
+  .brand h1 .x { color:var(--gold); margin:0 6px; }
+  .brand .sub {
+    font-family:"Fraunces",Georgia,serif; font-size:11px; letter-spacing:5px;
+    color:var(--gold); text-transform:uppercase; margin-top:4px;
+    text-shadow:0 1px 8px rgba(9,14,30,.7), 0 0 2px rgba(9,14,30,.6);
+  }
+  #clock { text-align:right; text-shadow:0 1px 8px rgba(9,14,30,.65), 0 0 2px rgba(9,14,30,.5); }
+  #clock .date { font-size:17px; letter-spacing:1px; }
+  #clock .time {
+    font-family:"Fraunces",Georgia,serif; font-size:30px; font-weight:600;
+    color:var(--gold); font-variant-numeric:tabular-nums; line-height:1.05;
+  }
+  #clock .phase { font-size:12px; color:var(--ink-dim); letter-spacing:2px; }
+
+  /* ── 主区 ── */
+  #stage { flex:1; display:flex; min-height:0; padding:0 18px; gap:14px; }
+  #mapwrap { flex:1; min-width:0; position:relative; }
+  #map { width:100%; height:100%; display:block; }
+  #legend {
+    position:absolute; left:14px; bottom:10px; font-size:12px; color:var(--ink-dim);
+    letter-spacing:1px; background:rgba(9,14,30,.55); padding:6px 12px;
+    border:1px solid rgba(216,178,106,.18); border-radius:20px; backdrop-filter:blur(4px);
+  }
+  #sprite-tag {
+    position:absolute; pointer-events:none; z-index:20;
+    background:var(--panel); border:1px solid var(--gold-dim); border-radius:10px;
+    padding:6px 12px; font-size:13px; letter-spacing:.5px; max-width:260px;
+    box-shadow:0 4px 18px rgba(0,0,0,.45); transform:translate(-50%,-115%);
+    transition:opacity .3s; backdrop-filter:blur(4px);
+  }
+  #sprite-tag .t-time { color:var(--gold); font-size:11px; letter-spacing:1px; display:block; }
+
+  /* ── 右侧面板 ── */
+  #panel {
+    width:330px; flex-shrink:0; background:var(--panel);
+    border:1px solid rgba(216,178,106,.22); border-radius:16px;
+    padding:16px 16px 10px; overflow-y:auto; backdrop-filter:blur(6px);
+    display:flex; flex-direction:column;
+  }
+  #panel .p-day {
+    font-family:"Fraunces",Georgia,serif; font-size:12px; letter-spacing:3px;
+    color:var(--gold); text-transform:uppercase;
+  }
+  #panel h2 { font-size:20px; margin:4px 0 2px; letter-spacing:1px; }
+  #panel .p-region { font-size:12px; color:var(--ink-dim); margin-bottom:10px; letter-spacing:1px; }
+  #steps { list-style:none; }
+  #steps li {
+    display:flex; gap:10px; padding:7px 8px; border-radius:8px;
+    font-size:13.5px; line-height:1.45; color:var(--ink-dim);
+    border-left:2px solid transparent; transition:all .3s;
+  }
+  #steps li .st-t {
+    font-family:"Fraunces",Georgia,serif; font-variant-numeric:tabular-nums;
+    font-size:12px; min-width:74px; padding-top:1px; color:#7c8598;
+  }
+  #steps li.done { color:#6d7688; }
+  #steps li.done .st-t { text-decoration:line-through; }
+  #steps li.active {
+    background:rgba(216,178,106,.1); border-left-color:var(--gold); color:var(--ink);
+  }
+  #steps li.active .st-t { color:var(--gold); }
+  #steps li .mode-ic { margin-right:2px; }
+  #panel::-webkit-scrollbar { width:4px; }
+  #panel::-webkit-scrollbar-thumb { background:rgba(216,178,106,.3); border-radius:2px; }
+
+  /* ── 底部控制 ── */
+  #controls { padding:10px 28px 14px; }
+  #scrub { width:100%; -webkit-appearance:none; appearance:none; height:4px; border-radius:2px;
+    background:linear-gradient(90deg,var(--gold) var(--p,0%),rgba(255,255,255,.14) var(--p,0%)); outline:none; }
+  #scrub::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; border-radius:50%;
+    background:var(--gold); border:3px solid #10182e; box-shadow:0 0 10px rgba(216,178,106,.6); cursor:pointer; }
+  #ctrl-row { display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap;
+    background:rgba(9,14,30,.35); border-radius:14px; padding:8px 10px; backdrop-filter:blur(4px); }
+  .cbtn {
+    background:rgba(216,178,106,.1); color:var(--gold); border:1px solid var(--gold-dim);
+    border-radius:20px; padding:6px 16px; font-size:14px; cursor:pointer;
+    font-family:inherit; letter-spacing:1px; transition:all .2s;
+  }
+  .cbtn:hover { background:rgba(216,178,106,.22); }
+  #daychips { display:flex; gap:6px; flex-wrap:wrap; margin-left:auto; }
+  .chip {
+    min-width:40px; text-align:center; padding:5px 8px; border-radius:8px; font-size:12px;
+    background:rgba(255,255,255,.05); color:var(--ink-dim); cursor:pointer;
+    border:1px solid transparent; transition:all .2s; letter-spacing:.5px;
+  }
+  .chip:hover { border-color:var(--gold-dim); color:var(--ink); }
+  .chip.now { background:var(--gold); color:#10182e; font-weight:700; }
+  .chip.past { color:#6d7688; }
+
+  /* ── SVG 元素 ── */
+  .land { fill:#232c44; stroke:#3a4666; stroke-width:1.5; }
+  .snow { fill:#2e3a58; opacity:.8; }
+  .coast-lbl { font-size:13px; fill:#5f6b88; letter-spacing:3px; font-family:inherit; }
+  .sea-lbl { font-family:"Fraunces",Georgia,serif; font-size:12px; fill:#3d4a6b; letter-spacing:6px; font-style:italic; }
+  .route { fill:none; stroke:var(--gold-dim); stroke-width:2; stroke-dasharray:6 6; stroke-linecap:round; }
+  .route.air { stroke:rgba(150,190,255,.35); }
+  .poi-dot { fill:#8b96b0; stroke:#10182e; stroke-width:1.5; }
+  .poi-dot.visited { fill:var(--gold); }
+  .poi-dot.hotel { fill:#e8a86a; }
+  .poi-lbl { font-size:12.5px; fill:#aeb8cf; letter-spacing:.5px; paint-order:stroke; stroke:rgba(9,14,30,.85); stroke-width:3px; }
+  .poi-lbl.visited { fill:var(--gold); }
+  .sprite { filter:drop-shadow(0 2px 6px rgba(0,0,0,.6)); }
+  .star { fill:#dfe8ff; }
+  #aurora-g { opacity:0; transition:opacity 2s; }
+  #aurora-g.on { opacity:.85; }
+  .aur { fill:none; stroke-linecap:round; filter:blur(6px); animation:aurflow 7s ease-in-out infinite alternate; }
+  @keyframes aurflow { from { transform:translateX(-14px) skewX(-4deg); opacity:.5; } to { transform:translateX(18px) skewX(5deg); opacity:.95; } }
+  .pulse { animation:pulse 2.2s ease-in-out infinite; transform-origin:center; transform-box:fill-box; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.35; } }
+  .compass { animation:spin 60s linear infinite; transform-origin:center; transform-box:fill-box; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  @media (max-width:980px) {
+    body { overflow:auto; }
+    #app { height:auto; }
+    #stage { flex-direction:column; }
+    #mapwrap { height:56vh; }
+    #panel { width:100%; max-height:40vh; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="brand">
+      <h1>冰岛 <span class="x">×</span> 挪威 · 北极圈 13 天</h1>
+      <div class="sub">Arctic Journal · Jan 11 – 23, 2027</div>
+    </div>
+    <div id="clock">
+      <div class="date" id="c-date">1月11日 周一</div>
+      <div class="time" id="c-time">00:00</div>
+      <div class="phase" id="c-phase">深夜</div>
+    </div>
+  </header>
+
+  <div id="stage">
+    <div id="mapwrap">
+      <svg id="map" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#101a36" stop-opacity=".55"/>
+            <stop offset="1" stop-color="#0a1128" stop-opacity=".9"/>
+          </linearGradient>
+          <linearGradient id="aurG" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#7dffb2" stop-opacity="0"/>
+            <stop offset=".5" stop-color="#7dffb2"/>
+            <stop offset="1" stop-color="#5ac8ff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <rect width="1600" height="900" fill="url(#water)"/>
+        <g id="stars"></g>
+        <g id="grat" stroke="rgba(255,255,255,.04)" stroke-width="1"></g>
+
+        <!-- 海面标注 -->
+        <text class="sea-lbl" x="500" y="330">N O R T H · A T L A N T I C</text>
+        <text class="sea-lbl" x="980" y="520">N O R W E G I A N · S E A</text>
+
+        <!-- 冰岛 -->
+        <g id="iceland-g">
+          <path class="land" d="M 120 660 C 100 640 110 600 150 585 C 170 555 200 540 260 545
+            C 300 505 340 480 420 470 C 500 445 600 460 680 500 C 740 520 780 545 770 590
+            C 760 640 700 660 640 668 C 560 700 480 690 400 672 C 320 690 240 685 190 672
+            C 150 668 130 668 120 660 Z"/>
+          <path class="snow" d="M 480 470 C 540 452 620 462 670 495 C 630 505 560 502 520 492 C 495 486 480 480 480 470 Z"/>
+          <path class="snow" d="M 660 520 C 700 512 740 528 752 552 C 724 566 690 560 672 544 Z"/>
+          <text class="coast-lbl" x="330" y="760">冰 岛 · I C E L A N D</text>
+        </g>
+
+        <!-- 挪威 -->
+        <g id="norway-g">
+          <path class="land" d="M 1080 60 C 1120 140 1100 220 1140 300 C 1180 380 1220 460 1270 540
+            C 1310 610 1330 680 1360 780 L 1420 900 L 1600 900 L 1600 0 L 1180 0 C 1130 20 1090 30 1080 60 Z"/>
+          <!-- 峡湾切口 -->
+          <path d="M 1095 250 C 1120 258 1135 270 1145 285" stroke="url(#water)" stroke-width="10" fill="none" opacity=".9"/>
+          <path d="M 1120 320 C 1150 330 1165 345 1172 362" stroke="url(#water)" stroke-width="8" fill="none" opacity=".9"/>
+          <path class="snow" d="M 1200 60 C 1300 40 1450 30 1600 25 L 1600 0 L 1180 0 Z"/>
+          <text class="coast-lbl" x="1380" y="120">挪 威</text>
+          <text class="coast-lbl" x="1392" y="142" style="font-size:10px;letter-spacing:4px">NORWAY</text>
+        </g>
+
+        <!-- 极光（特罗姆瑟夜空） -->
+        <g id="aurora-g">
+          <path class="aur" d="M 960 130 C 1060 80 1180 160 1300 100 C 1400 60 1500 120 1560 90" stroke="url(#aurG)" stroke-width="26"/>
+          <path class="aur" style="animation-delay:-2.5s" d="M 980 170 C 1090 120 1200 190 1320 140 C 1420 100 1510 150 1570 130" stroke="url(#aurG)" stroke-width="16"/>
+          <path class="aur" style="animation-delay:-5s" d="M 1000 95 C 1100 55 1210 120 1330 70 C 1430 40 1520 85 1580 60" stroke="url(#aurG)" stroke-width="10"/>
+        </g>
+
+        <g id="routes"></g>
+        <g id="pois"></g>
+
+        <!-- 罗盘 -->
+        <g transform="translate(905,825)" opacity=".55">
+          <circle r="30" fill="none" stroke="var(--gold-dim)" stroke-width="1"/>
+          <g class="compass">
+            <path d="M 0 -24 L 5 0 L 0 24 L -5 0 Z" fill="var(--gold)" opacity=".8"/>
+          </g>
+          <text y="-36" text-anchor="middle" font-size="11" fill="var(--gold)" letter-spacing="2">N</text>
+        </g>
+
+        <!-- 天体 -->
+        <g id="sun" opacity="0"><circle r="16" fill="#f5d78e"/><circle r="24" fill="#f5d78e" opacity=".25"/></g>
+        <g id="moon" opacity="0"><circle r="12" fill="#dfe6f5"/><circle cx="-4" cy="-3" r="10" fill="#0d1430" opacity=".55"/></g>
+
+        <!-- 精灵 -->
+        <text id="sp-vehicle" class="sprite" font-size="34" opacity="0">🚐</text>
+        <text id="sp-person" class="sprite" font-size="30" opacity="0">🧍</text>
+      </svg>
+      <div id="sprite-tag" style="opacity:0"><span class="t-time"></span><span class="t-label"></span></div>
+      <div id="legend">🚐 包车 · ✈️ 航班 · 🧍 步行/游玩 · 🏨 当日酒店 ｜ 示意地图 · 不按真实比例</div>
+    </div>
+
+    <div id="panel">
+      <div class="p-day" id="p-day">DAY 1 / 13</div>
+      <h2 id="p-title">抵达 + 蓝湖</h2>
+      <div class="p-region" id="p-region">🇮🇸 冰岛 · 蓝湖</div>
+      <ul id="steps"></ul>
+    </div>
+  </div>
+
+  <div id="controls">
+    <input type="range" id="scrub" min="0" max="1299" value="0">
+    <div id="ctrl-row">
+      <button class="cbtn" id="btn-play">⏸ 暂停</button>
+      <button class="cbtn" id="btn-prev">⏮ 前一天</button>
+      <button class="cbtn" id="btn-next">下一天 ⏭</button>
+      <button class="cbtn" id="btn-speed">1×</button>
+      <div id="daychips"></div>
+    </div>
+  </div>
+</div>
+<script>
+/* ══════════ 点位 ══════════ */
+const POI = {
+  pek:     {x:-80,  y:320, n:'北京'},
+  kef:     {x:170,  y:640, n:'凯夫拉维克机场', lb:{dx:12,dy:-8}},
+  lagoon:  {x:200,  y:612, n:'蓝湖 The Retreat', hotel:1, lb:{dx:10,dy:16}},
+  rkv:     {x:262,  y:575, n:'雷市 Consulate', hotel:1, lb:{dx:-12,dy:-10,a:'end'}},
+  thing:   {x:335,  y:528, n:'辛格维利尔', lb:{dx:8,dy:-8}},
+  geysir:  {x:395,  y:508, n:'间歇泉', lb:{dx:10,dy:2}},
+  gullfoss:{x:445,  y:492, n:'黄金瀑布', lb:{dx:10,dy:-6}},
+  skalakot:{x:425,  y:588, n:'Skálakot 庄园', hotel:1, lb:{dx:10,dy:14}},
+  selja:   {x:462,  y:608, n:'塞里雅兰瀑布', lb:{dx:8,dy:20}},
+  skoga:   {x:502,  y:618, n:'斯科加瀑布', lb:{dx:8,dy:-8}},
+  black:   {x:558,  y:630, n:'黑沙滩 · 维克', lb:{dx:10,dy:14}},
+  jokul:   {x:712,  y:552, n:'冰河湖 Hótel Jökulsárlón', hotel:1, lb:{dx:-10,dy:-12,a:'end'}},
+  tos:     {x:1128, y:232, n:'特罗姆瑟机场', lb:{dx:-8,dy:-10,a:'end'}},
+  tromso:  {x:1168, y:258, n:'特罗姆瑟 · Scandic 码头', hotel:1, lb:{dx:12,dy:4}},
+  cable:   {x:1212, y:282, n:'Fjellheisen 缆车', lb:{dx:10,dy:14}},
+  church:  {x:1188, y:296, n:'北极大教堂', lb:{dx:10,dy:24}},
+  whale:   {x:1052, y:198, n:'观鲸峡湾', lb:{dx:-10,dy:-10,a:'end'}},
+  ers:     {x:1092, y:318, n:'Ersfjordbotn', lb:{dx:-10,dy:16,a:'end'}},
+  husky:   {x:1248, y:324, n:'狗拉雪橇营地', lb:{dx:8,dy:22}},
+  aurora:  {x:1292, y:238, n:'极光观测点', lb:{dx:12,dy:-4}},
+  sommerro:{x:1312, y:668, n:'Sommerro 酒店', hotel:1, lb:{dx:-12,dy:-10,a:'end'}},
+  kontrast:{x:1322, y:650, n:'Kontrast', lb:{dx:-14,dy:18,a:'end'}},
+  oslcity: {x:1342, y:690, n:'歌剧院 · 卡尔约翰大街', lb:{dx:12,dy:6}},
+  osl:     {x:1390, y:732, n:'奥斯陆机场', lb:{dx:-8,dy:20,a:'end'}},
+  home:    {x:1720, y:420, n:'北京 / 杭州'},
+};
+
+/* ══════════ 每日行程（与看板一致） ══════════ */
+const DAYS = [
+ {date:'1月11日', wd:'周一', title:'抵达 + 蓝湖', region:'ice', chip:'D1 蓝湖', steps:[
+   {t0:0,   t1:3.5,  mode:'plane', from:'pek',   to:'pek',   label:'北京 03:30 起飞（经停哥本哈根）', region:'ice'},
+   {t0:3.5, t1:11.25,mode:'plane', from:'pek',   to:'kef',   label:'国航 北京 → 雷克雅未克 11:15 到', region:'ice'},
+   {t0:11.25,t1:11.75,mode:'car',  from:'kef',   to:'lagoon',label:'落地！包车 20 分钟到蓝湖'},
+   {t0:11.75,t1:17,  mode:'stay',  from:'lagoon',to:'lagoon',label:'入住 The Retreat · 私汤倒时差'},
+   {t0:17,  t1:18,   mode:'walk',  from:'lagoon',to:'lagoon',label:'蓝湖暮色散步 · 硅泥面膜'},
+   {t0:18,  t1:21,   mode:'stay',  from:'lagoon',to:'lagoon',label:'🍽 Moss 米其林一星（18:00 订位）'},
+   {t0:21,  t1:24,   mode:'sleep', from:'lagoon',to:'lagoon',label:'🏨 夜宿 The Retreat at Blue Lagoon'},
+ ]},
+ {date:'1月12日', wd:'周二', title:'蓝湖休整日（倒时差）', region:'ice', chip:'D2 泡汤日', steps:[
+   {t0:0,   t1:9,    mode:'sleep', from:'lagoon',to:'lagoon',label:'🏨 夜宿 The Retreat'},
+   {t0:9,   t1:11.5, mode:'stay',  from:'lagoon',to:'lagoon',label:'晨泡私汤 · 几乎没人'},
+   {t0:11.5,t1:14,   mode:'walk',  from:'lagoon',to:'lagoon',label:'熔岩原散步 + 蓝湖面膜'},
+   {t0:14,  t1:17,   mode:'stay',  from:'lagoon',to:'lagoon',label:'Retreat Spa · 干蒸 / 冷水池'},
+   {t0:17,  t1:18.5, mode:'walk',  from:'lagoon',to:'lagoon',label:'酒店 lounge 看雪发呆'},
+   {t0:18.5,t1:21,   mode:'stay',  from:'lagoon',to:'lagoon',label:'🍽 Lava 餐厅（蓝湖景观位）'},
+   {t0:21,  t1:24,   mode:'sleep', from:'lagoon',to:'lagoon',label:'🏨 夜宿 The Retreat'},
+ ]},
+ {date:'1月13日', wd:'周三', title:'黄金圈 → 住庄园', region:'ice', chip:'D3 黄金圈', steps:[
+   {t0:0,   t1:9,    mode:'sleep', from:'lagoon',to:'lagoon',label:'🏨 夜宿 The Retreat'},
+   {t0:9,   t1:9.75, mode:'car',   from:'lagoon',to:'thing', label:'出发黄金圈（约 45min）'},
+   {t0:9.75,t1:11.75,mode:'walk',  from:'thing', to:'thing', label:'辛格维利尔 · 两大板块裂缝'},
+   {t0:11.75,t1:12.75,mode:'car',  from:'thing', to:'geysir',label:'前往间歇泉'},
+   {t0:12.75,t1:14,  mode:'walk',  from:'geysir',to:'geysir',label:'盖歇尔间歇泉 · 几分钟喷一次'},
+   {t0:14,  t1:14.5, mode:'car',   from:'geysir',to:'gullfoss',label:'前往黄金瀑布'},
+   {t0:14.5,t1:15.75,mode:'walk',  from:'gullfoss',to:'gullfoss',label:'黄金瀑布 · 双层跌水'},
+   {t0:15.75,t1:16.5,mode:'car',   from:'gullfoss',to:'skalakot',label:'南下入住庄园'},
+   {t0:16.5,t1:18,   mode:'walk',  from:'skalakot',to:'skalakot',label:'百年庄园 + 冰岛马场'},
+   {t0:18,  t1:20.5, mode:'stay',  from:'skalakot',to:'skalakot',label:'🍽 Skálakot 庄园晚餐（农场直供）'},
+   {t0:20.5,t1:24,   mode:'sleep', from:'skalakot',to:'skalakot',label:'🏨 夜宿 Skálakot Manor'},
+ ]},
+ {date:'1月14日', wd:'周四', title:'南岸瀑布 → 黑沙滩 → 冰河湖', region:'ice', chip:'D4 南岸', steps:[
+   {t0:0,   t1:8.5,  mode:'sleep', from:'skalakot',to:'skalakot',label:'🏨 夜宿 Skálakot Manor'},
+   {t0:8.5, t1:9,    mode:'car',   from:'skalakot',to:'selja', label:'出发南岸'},
+   {t0:9,   t1:10,   mode:'walk',  from:'selja',  to:'selja',  label:'塞里雅兰瀑布 · 绕到水帘后'},
+   {t0:10,  t1:10.5, mode:'car',   from:'selja',  to:'skoga',  label:'前往斯科加'},
+   {t0:10.5,t1:11.5, mode:'walk',  from:'skoga',  to:'skoga',  label:'斯科加瀑布 · 晴天有彩虹'},
+   {t0:11.5,t1:12.25,mode:'car',   from:'skoga',  to:'black',  label:'前往维克'},
+   {t0:12.25,t1:14.5,mode:'walk',  from:'black',  to:'black',  label:'维克午餐 + Reynisfjara 黑沙滩（⚠️远离浪线）'},
+   {t0:14.5,t1:17.5, mode:'car',   from:'black',  to:'jokul',  label:'1 号公路向东 · 约 2.5-3h'},
+   {t0:17.5,t1:18.5, mode:'stay',  from:'jokul',  to:'jokul',  label:'入住 Hótel Jökulsárlón · 离冰河湖 8 分钟'},
+   {t0:18.5,t1:20.5, mode:'stay',  from:'jokul',  to:'jokul',  label:'🍽 酒店晚餐 · 户外泡池等极光'},
+   {t0:20.5,t1:24,   mode:'sleep', from:'jokul',  to:'jokul',  label:'🏨 夜宿 Hótel Jökulsárlón'},
+ ]},
+ {date:'1月15日', wd:'周五', title:'蓝冰洞（全程重头戏）', region:'ice', chip:'D5 蓝冰洞', steps:[
+   {t0:0,   t1:8.75, mode:'sleep', from:'jokul',  to:'jokul',  label:'🏨 夜宿 Hótel Jökulsárlón'},
+   {t0:8.75,t1:9.5,  mode:'walk',  from:'jokul',  to:'jokul',  label:'8 分钟到冰洞集合点'},
+   {t0:9.5, t1:13.5, mode:'walk',  from:'jokul',  to:'jokul',  label:'🧊 蓝冰洞探险 9:30 团（天气差则保底改 1/16）'},
+   {t0:13.5,t1:14.5, mode:'stay',  from:'jokul',  to:'jokul',  label:'回酒店暖一暖 + 午餐'},
+   {t0:14.5,t1:16.5, mode:'walk',  from:'jokul',  to:'jokul',  label:'冰河湖 + 钻石沙滩 · 日落前最美'},
+   {t0:16.5,t1:18.5, mode:'stay',  from:'jokul',  to:'jokul',  label:'酒店桑拿 · 休整'},
+   {t0:18.5,t1:20.5, mode:'stay',  from:'jokul',  to:'jokul',  label:'🍽 酒店晚餐'},
+   {t0:20.5,t1:24,   mode:'sleep', from:'jokul',  to:'jokul',  label:'🏨 夜宿 Hótel Jökulsárlón'},
+ ]},
+ {date:'1月16日', wd:'周六', title:'回雷市（车上补觉日）', region:'ice', chip:'D6 回雷市', steps:[
+   {t0:0,   t1:9,    mode:'sleep', from:'jokul',  to:'jokul',  label:'🏨 夜宿 Hótel Jökulsárlón'},
+   {t0:9,   t1:12,   mode:'car',   from:'jokul',  to:'black',  label:'返程南岸（全天 4.5-5h）'},
+   {t0:12,  t1:13,   mode:'walk',  from:'black',  to:'black',  label:'维克午餐 + 教堂山看海'},
+   {t0:13,  t1:16,   mode:'car',   from:'black',  to:'rkv',    label:'继续回雷市'},
+   {t0:16,  t1:19,   mode:'stay',  from:'rkv',    to:'rkv',    label:'入住 Consulate Hotel · 连住 2 晚'},
+   {t0:19,  t1:21.5, mode:'walk',  from:'rkv',    to:'rkv',    label:'🍽 Tides 19:30（Dill 主厨姊妹店，步行 6 分钟）'},
+   {t0:21.5,t1:24,   mode:'sleep', from:'rkv',    to:'rkv',    label:'🏨 夜宿 Reykjavik Consulate Hotel'},
+ ]},
+ {date:'1月17日', wd:'周日', title:'雷市全天 + Sky Lagoon', region:'ice', chip:'D7 雷市', steps:[
+   {t0:0,   t1:10,   mode:'sleep', from:'rkv',    to:'rkv',    label:'🏨 夜宿 Consulate'},
+   {t0:10,  t1:12,   mode:'walk',  from:'rkv',    to:'rkv',    label:'哈尔格林姆教堂登顶看彩色屋顶'},
+   {t0:12,  t1:14,   mode:'walk',  from:'rkv',    to:'rkv',    label:'主街 Laugavegur 逛店 + 午餐'},
+   {t0:14,  t1:16.5, mode:'walk',  from:'rkv',    to:'rkv',    label:'哈帕音乐厅 + 太阳航海者雕塑'},
+   {t0:16.5,t1:19,   mode:'stay',  from:'rkv',    to:'rkv',    label:'Sky Lagoon 七步疗法（打车 10min）'},
+   {t0:19.5,t1:21.5, mode:'walk',  from:'rkv',    to:'rkv',    label:'🍽 Grillmarkaðurinn 烧烤市场 19:30'},
+   {t0:21.5,t1:24,   mode:'sleep', from:'rkv',    to:'rkv',    label:'🏨 夜宿 Consulate'},
+ ]},
+ {date:'1月18日', wd:'周一', title:'飞特罗姆瑟 + 缆车夜景', region:'trom', chip:'D8 飞挪威', steps:[
+   {t0:0,   t1:4.5,  mode:'sleep', from:'rkv',    to:'rkv',    label:'🏨 夜宿 Consulate', region:'ice'},
+   {t0:4.5, t1:5.5,  mode:'car',   from:'rkv',    to:'kef',    label:'04:30 送机 · 冰岛包车到此结束', region:'ice'},
+   {t0:5.5, t1:7.8,  mode:'stay',  from:'kef',    to:'kef',    label:'KEF 值机 · 07:50 起飞', region:'ice'},
+   {t0:7.8, t1:12.75,mode:'plane', from:'kef',    to:'tos',    label:'冰岛航空直飞 2h55m（仅周一/周五有）', region:'trom'},
+   {t0:12.75,t1:13.25,mode:'car',  from:'tos',    to:'tromso', label:'机场 → 市区 15 分钟'},
+   {t0:13.25,t1:17,  mode:'stay',  from:'tromso', to:'tromso', label:'入住 Scandic · 连住 4 晚 · 港口散步'},
+   {t0:17,  t1:18.5, mode:'walk',  from:'tromso', to:'cable',  label:'Fjellheisen 缆车 · 山顶看全城亮灯'},
+   {t0:19.5,t1:21.5, mode:'stay',  from:'tromso', to:'tromso', label:'🍽 Arctandria 海鲜（鳕鱼舌 / 帝王蟹）'},
+   {t0:21.5,t1:24,   mode:'walk',  from:'tromso', to:'tromso', label:'🌌 码头蹲极光 · 第一晚'},
+ ]},
+ {date:'1月19日', wd:'周二', title:'市区 + 极光追猎团', region:'trom', chip:'D9 极光团', steps:[
+   {t0:0,   t1:10,   mode:'sleep', from:'tromso', to:'tromso', label:'🏨 夜宿 Scandic'},
+   {t0:10,  t1:12.5, mode:'walk',  from:'tromso', to:'church', label:'北极大教堂 + 极地博物馆'},
+   {t0:12.5,t1:14.5, mode:'walk',  from:'church', to:'tromso', label:'🍽 Mathallen 美食广场午餐'},
+   {t0:14.5,t1:17,   mode:'walk',  from:'tromso', to:'tromso', label:'Kaffebønna 咖啡 · 备齐暖宝宝'},
+   {t0:18,  t1:18.75,mode:'car',   from:'tromso', to:'aurora', label:'极光团小巴出发 18:00'},
+   {t0:18.75,t1:24,  mode:'stay',  from:'aurora', to:'aurora', label:'🌌 追极光 · 篝火晚餐 + 摄影跟拍（约 6h）'},
+ ]},
+ {date:'1月20日', wd:'周三', title:'峡湾观鲸', region:'trom', chip:'D10 观鲸', steps:[
+   {t0:0,   t1:8.5,  mode:'sleep', from:'tromso', to:'tromso', label:'🏨 夜宿 Scandic'},
+   {t0:8.5, t1:9,    mode:'walk',  from:'tromso', to:'tromso', label:'码头集合（酒店旁 2 分钟）'},
+   {t0:9,   t1:9.5,  mode:'boat',  from:'tromso', to:'whale',  label:'大船出峡湾'},
+   {t0:9.5, t1:14.5, mode:'stay',  from:'whale',  to:'whale',  label:'🐋 峡湾观鲸 5-6h · 虎鲸 / 座头鲸'},
+   {t0:14.5,t1:15,   mode:'boat',  from:'whale',  to:'tromso', label:'返航'},
+   {t0:15.5,t1:16,   mode:'car',   from:'tromso', to:'ers',    label:'打车 20min 去峡湾小镇'},
+   {t0:16,  t1:17.5, mode:'walk',  from:'ers',    to:'ers',    label:'Ersfjordbotn 明信片机位'},
+   {t0:17.5,t1:18,   mode:'car',   from:'ers',    to:'tromso', label:'回市区'},
+   {t0:18.5,t1:20.5, mode:'stay',  from:'tromso', to:'tromso', label:"🍽 Bardus / Emma's（建议订位）"},
+   {t0:20.5,t1:24,   mode:'sleep', from:'tromso', to:'tromso', label:'🏨 夜宿 Scandic'},
+ ]},
+ {date:'1月21日', wd:'周四', title:'特罗姆瑟深度日', region:'trom', chip:'D11 深度日', steps:[
+   {t0:0,   t1:9,    mode:'sleep', from:'tromso', to:'tromso', label:'🏨 夜宿 Scandic'},
+   {t0:9,   t1:9.75, mode:'car',   from:'tromso', to:'husky',  label:'营地接送（约 40min）'},
+   {t0:9.75,t1:13,   mode:'walk',  from:'husky',  to:'husky',  label:'🛷 狗拉雪橇 · 极夜蓝光跑雪原（也可换驯鹿+萨米营）'},
+   {t0:13,  t1:13.75,mode:'car',   from:'husky',  to:'tromso', label:'回市区'},
+   {t0:14,  t1:16,   mode:'walk',  from:'tromso', to:'tromso', label:'Kaffebønna 咖啡 · 回酒店补觉'},
+   {t0:18,  t1:20,   mode:'stay',  from:'tromso', to:'tromso', label:'🍽 Skirri / Full Steam 海鲜（码头边）'},
+   {t0:21,  t1:24,   mode:'walk',  from:'tromso', to:'tromso', label:'🌌 码头蹲极光 · 第三晚'},
+ ]},
+ {date:'1月22日', wd:'周五', title:'飞奥斯陆 + 歌剧院 + 逛街', region:'osl', chip:'D12 奥斯陆', steps:[
+   {t0:0,   t1:7.75, mode:'sleep', from:'tromso', to:'tromso', label:'🏨 夜宿 Scandic', region:'trom'},
+   {t0:7.75,t1:8,    mode:'car',   from:'tromso', to:'tos',    label:'酒店 → TOS 15 分钟', region:'trom'},
+   {t0:8,   t1:9.5,  mode:'stay',  from:'tos',    to:'tos',    label:'值机 · 09:30 起飞', region:'trom'},
+   {t0:9.5, t1:11.5, mode:'plane', from:'tos',    to:'osl',    label:'TOS → OSL 约 2h', region:'osl'},
+   {t0:11.5,t1:12.25,mode:'car',   from:'osl',    to:'sommerro',label:'机场快线 20min 进城 · 寄存行李'},
+   {t0:12.25,t1:14,  mode:'stay',  from:'sommerro',to:'sommerro',label:'Ekspedisjonshallen 午餐（最出片大厅）'},
+   {t0:14,  t1:17,   mode:'walk',  from:'sommerro',to:'oslcity',label:'歌剧院屋顶（免费）+ 卡尔约翰大街 → 阿克尔码头'},
+   {t0:17,  t1:19,   mode:'walk',  from:'oslcity',to:'sommerro',label:'回酒店换装休息'},
+   {t0:19,  t1:19.5, mode:'walk',  from:'sommerro',to:'kontrast',label:'前往 Vulkan 区'},
+   {t0:19.5,t1:22.5, mode:'stay',  from:'kontrast',to:'kontrast',label:'🍽 Kontrast 19:30 · 米二告别大餐（🔴 提前 3-6 周订）'},
+   {t0:22.5,t1:24,   mode:'sleep', from:'sommerro',to:'sommerro',label:'🏨 夜宿 Sommerro'},
+ ]},
+ {date:'1月23日', wd:'周六', title:'回国', region:'osl', chip:'D13 回国', steps:[
+   {t0:0,   t1:9,    mode:'sleep', from:'sommerro',to:'sommerro',label:'🏨 夜宿 Sommerro'},
+   {t0:9,   t1:9.75, mode:'stay',  from:'sommerro',to:'sommerro',label:'退房 · 朋友多待半天'},
+   {t0:9.75,t1:10.5, mode:'car',   from:'sommerro',to:'osl',    label:'机场快线 / 打车 45min'},
+   {t0:10.5,t1:12.5, mode:'stay',  from:'osl',    to:'osl',    label:'值机 · 你 12:30 海航飞北京'},
+   {t0:12.5,t1:24,   mode:'plane', from:'osl',    to:'home',   label:'✈️ 回家 · 朋友 15:05 卡航飞杭州 🎉'},
+ ]},
+];
+
+const MODE_ICON = {car:'🚐', plane:'✈️', walk:'🧍', stay:'📍', sleep:'🏨', boat:'🚢'};
+const REGION_TXT = {ice:'🇮🇸 冰岛', trom:'🇳🇴 特罗姆瑟', osl:'🇳🇴 奥斯陆'};
+
+/* ══════════ 天空调色板 ══════════ */
+const SKY = {
+  ice: [ [0,8,12,32, 22,28,52, 1,-1], [9.5,16,22,44, 34,42,70, .5,-1], [11,96,116,156, 209,183,146, 0,.08],
+         [13,140,172,210, 224,218,200, 0,.7], [15.5,150,150,180, 232,190,140, 0,.35], [16.8,70,60,100, 190,120,110, .1,-.05],
+         [18.2,14,18,40, 30,32,60, .8,-1], [24,8,12,32, 22,28,52, 1,-1] ],
+  trom:[ [0,7,10,28, 18,24,48, 1,-1], [9,18,24,48, 38,46,74, .5,-1], [11,46,58,96, 96,84,116, .1,-1],
+         [13,58,72,110, 122,102,130, 0,-1], [15,34,42,74, 70,58,92, .3,-1], [16.5,10,14,34, 24,30,56, 1,-1],
+         [24,7,10,28, 18,24,48, 1,-1] ],
+  osl: [ [0,8,12,30, 20,26,50, 1,-1], [8.5,18,24,46, 36,44,72, .4,-1], [9.5,110,124,162, 222,186,150, 0,.1],
+         [12,150,180,214, 230,222,204, 0,.75], [15.3,150,148,178, 236,186,136, 0,.3], [16.3,64,58,98, 182,116,108, .15,-.05],
+         [18,10,14,34, 26,30,56, .9,-1], [24,8,12,30, 20,26,50, 1,-1] ],
+};
+const ANCHOR = {ice:{cx:430,y:330}, trom:{cx:1250,y:50}, osl:{cx:1340,y:520}};
+
+function skyAt(region, h) {
+  const kf = SKY[region] || SKY.ice;
+  let a = kf[0], b = kf[kf.length-1];
+  for (let i=0;i<kf.length-1;i++) if (h>=kf[i][0] && h<=kf[i+1][0]) { a=kf[i]; b=kf[i+1]; break; }
+  const span = b[0]-a[0] || 1, f = Math.min(1,Math.max(0,(h-a[0])/span));
+  const L = (x,y)=>Math.round(x+(y-x)*f);
+  return {
+    top:`rgb(${L(a[1],b[1])},${L(a[2],b[2])},${L(a[3],b[3])})`,
+    bot:`rgb(${L(a[4],b[4])},${L(a[5],b[5])},${L(a[6],b[6])})`,
+    stars:a[7]+(b[7]-a[7])*f, sun:a[8]+(b[8]-a[8])*f,
+  };
+}
+function phaseTxt(region, h, stars) {
+  if (region==='trom' && h>=9.5 && h<=15.5) return '极夜微光';
+  if (stars>0.6) return (h>=0&&h<5)?'深夜':'夜晚';
+  if (h<9.5) return '清晨';
+  if (h<11.5) return '上午';
+  if (h<13.5) return '正午';
+  if (h<16.5) return '下午';
+  return '黄昏';
+}
+
+/* ══════════ 场景搭建 ══════════ */
+const svg = document.getElementById('map');
+const NS = 'http://www.w3.org/2000/svg';
+const el = (t,at)=>{ const e=document.createElementNS(NS,t); for(const k in at) e.setAttribute(k,at[k]); return e; };
+
+// 星星
+{
+  const g = document.getElementById('stars');
+  for (let i=0;i<110;i++){
+    const s = el('circle',{cx:Math.random()*1600, cy:Math.random()*430, r:(.6+Math.random()*1.3).toFixed(1), class:'star'});
+    s.style.opacity = (.3+Math.random()*.7).toFixed(2);
+    g.appendChild(s);
+  }
+}
+// 经纬线
+{
+  const g = document.getElementById('grat');
+  for (let x=100;x<1600;x+=100) g.appendChild(el('line',{x1:x,y1:0,x2:x,y2:900}));
+  for (let y=100;y<900;y+=100) g.appendChild(el('line',{x1:0,y1:y,x2:1600,y2:y}));
+}
+// 路线
+function pt(k){ const p=POI[k]; return [p.x,p.y]; }
+{
+  const g = document.getElementById('routes');
+  const drive1 = ['kef','lagoon','thing','geysir','gullfoss','skalakot','selja','skoga','black','jokul'];
+  const d1 = 'M '+drive1.map(k=>pt(k).join(' ')).join(' L ');
+  g.appendChild(el('path',{d:d1, class:'route'}));
+  g.appendChild(el('path',{d:`M ${pt('black')} L ${pt('rkv')}`, class:'route'}));
+  g.appendChild(el('path',{d:`M ${pt('lagoon')} L ${pt('rkv')}`, class:'route'}));
+  const air = (a,cx,cy,b)=>`M ${pt(a)} Q ${cx} ${cy} ${pt(b)}`;
+  g.appendChild(el('path',{d:air('pek',40,480,'kef'), class:'route air'}));
+  g.appendChild(el('path',{d:air('kef',500,140,'tos'), class:'route air'}));
+  g.appendChild(el('path',{d:air('tos',1210,530,'osl'), class:'route air'}));
+  g.appendChild(el('path',{d:air('osl',1560,560,'home'), class:'route air'}));
+}
+// 点位标记
+const poiDots = {}, poiLbls = {};
+{
+  const g = document.getElementById('pois');
+  for (const k in POI){
+    const p = POI[k];
+    if (p.x<0 || p.x>1600) continue;
+    const dot = el('circle',{cx:p.x, cy:p.y, r:p.hotel?6:4.5, class:'poi-dot'+(p.hotel?' hotel':'')});
+    g.appendChild(dot); poiDots[k]=dot;
+    const lb = p.lb||{};
+    const t = el('text',{x:p.x+(lb.dx??10), y:p.y+(lb.dy??4), class:'poi-lbl','text-anchor':lb.a||'start'});
+    t.textContent = (p.hotel?'🏨 ':'')+p.n;
+    g.appendChild(t); poiLbls[k]=t;
+  }
+}
+
+/* ══════════ 引擎 ══════════ */
+const spV = document.getElementById('sp-vehicle'), spP = document.getElementById('sp-person');
+const tag = document.getElementById('sprite-tag'), mapwrap = document.getElementById('mapwrap');
+const sunG = document.getElementById('sun'), moonG = document.getElementById('moon'), aurG = document.getElementById('aurora-g');
+const starsG = document.getElementById('stars');
+const scrub = document.getElementById('scrub');
+
+let T = 0, playing = true, speed = 1, lastTs = null;
+let curDay = -1, curStep = -1, dragging = false;
+
+const q = new URLSearchParams(location.search);
+if (q.has('t')) { T = parseFloat(q.get('t'))||0; playing = false; document.getElementById('btn-play').textContent='▶ 播放'; }
+
+// 日期 chips
+const chipsBox = document.getElementById('daychips');
+const chipEls = DAYS.map((d,i)=>{
+  const c = document.createElement('span'); c.className='chip'; c.textContent='D'+(i+1); c.title=d.chip;
+  c.onclick = ()=>{ T = i + 0.145; }; chipsBox.appendChild(c); return c;
+});
+
+function curvePos(a, b, f, lift){
+  const [x1,y1]=pt(a), [x2,y2]=pt(b);
+  const mx=(x1+x2)/2, my=(y1+y2)/2;
+  const dx=x2-x1, dy=y2-y1, dist=Math.hypot(dx,dy)||1;
+  const k = dist*(lift??0.1);
+  const cx = mx + (dy/dist)*k, cy = my - (dx/dist)*k; // 弧线向"左舷"弯
+  const u=1-f;
+  return [u*u*x1+2*u*f*cx+f*f*x2, u*u*y1+2*u*f*cy+f*f*y2, dx];
+}
+function svg2wrap(x,y){
+  const r=svg.getBoundingClientRect(), m=mapwrap.getBoundingClientRect();
+  const s=Math.min(r.width/1600, r.height/900);
+  return { x:(r.left-m.left)+(r.width-1600*s)/2 + x*s, y:(r.top-m.top)+(r.height-900*s)/2 + y*s };
+}
+function fmtH(h){ const H=Math.floor(h)%24, M=Math.round((h%1)*60); return String(H).padStart(2,'0')+':'+String(M).padStart(2,'0'); }
+
+function renderPanel(di){
+  const d = DAYS[di];
+  document.getElementById('p-day').textContent = `DAY ${di+1} / 13`;
+  document.getElementById('p-title').textContent = d.title;
+  document.getElementById('p-region').textContent = REGION_TXT[d.region] + ' · ' + d.date + ' ' + d.wd;
+  const ul = document.getElementById('steps'); ul.innerHTML='';
+  d.steps.forEach((s,i)=>{
+    const li = document.createElement('li'); li.dataset.i=i;
+    li.innerHTML = `<span class="st-t">${fmtH(s.t0)}</span><span><span class="mode-ic">${MODE_ICON[s.mode]}</span>${s.label}</span>`;
+    ul.appendChild(li);
+  });
+}
+function updateSteps(di, h){
+  const d = DAYS[di]; let ai = 0;
+  for (let i=0;i<d.steps.length;i++) if (h>=d.steps[i].t0 && h<d.steps[i].t1) { ai=i; break; }
+  if (ai===curStep) return ai;
+  curStep = ai;
+  document.querySelectorAll('#steps li').forEach(li=>{
+    const i = +li.dataset.i;
+    li.classList.toggle('active', i===ai);
+    li.classList.toggle('done', i<ai);
+  });
+  const act = document.querySelector('#steps li.active');
+  if (act) act.scrollIntoView({block:'nearest', behavior:'smooth'});
+  // 标签文字
+  const s = d.steps[ai];
+  tag.querySelector('.t-time').textContent = `${fmtH(s.t0)} – ${fmtH(s.t1)}`;
+  tag.querySelector('.t-label').textContent = s.label;
+  return ai;
+}
+
+function frame(ts){
+  if (lastTs===null) lastTs=ts;
+  const dt = Math.min(.1,(ts-lastTs)/1000); lastTs=ts;
+  if (playing){ T += dt*speed/8; if (T>=12.999){ T=12.999; playing=false; document.getElementById('btn-play').textContent='↺ 重播'; } }
+
+  const di = Math.min(12, Math.floor(T)), h = (T-di)*24;
+  const d = DAYS[di];
+  if (di!==curDay){ curDay=di; curStep=-1; renderPanel(di);
+    chipEls.forEach((c,i)=>{ c.classList.toggle('now',i===di); c.classList.toggle('past',i<di); });
+  }
+  const si = updateSteps(di, h);
+  const st = d.steps[si];
+  const region = st.region || d.region;
+
+  // 天空
+  const sky = skyAt(region, h);
+  document.body.style.setProperty('--skyT', sky.top);
+  document.body.style.setProperty('--skyB', sky.bot);
+  starsG.style.opacity = sky.stars;
+  aurG.classList.toggle('on', region==='trom' && sky.stars>0.45);
+
+  // 天体
+  const an = ANCHOR[region];
+  if (sky.sun > 0.02){
+    const az = Math.min(1,Math.max(0,(h-9)/8));
+    sunG.setAttribute('transform',`translate(${an.cx+(az-.5)*440},${an.y+60-sky.sun*150})`);
+    sunG.setAttribute('opacity', Math.min(1,sky.sun*2)); moonG.setAttribute('opacity',0);
+  } else {
+    sunG.setAttribute('opacity',0);
+    moonG.setAttribute('transform',`translate(${an.cx+170},${an.y+30})`);
+    moonG.setAttribute('opacity', sky.stars*.9);
+  }
+
+  // 精灵
+  const f = st.t1>st.t0 ? (h-st.t0)/(st.t1-st.t0) : 0;
+  let x, y, flip=1;
+  if (st.mode==='sleep'){
+    spV.setAttribute('opacity',0); spP.setAttribute('opacity',0);
+    const p = POI[st.from]; x=p.x; y=p.y;
+    if (poiDots[st.from]) poiDots[st.from].classList.add('pulse');
+  } else if (st.from!==st.to){
+    const lift = st.mode==='plane'? .18 : .07;
+    const r = curvePos(st.from, st.to, Math.min(1,Math.max(0,f)), lift);
+    x=r[0]; y=r[1]; flip = r[2]<0 ? -1 : 1;
+    if (st.mode==='walk'){
+      spV.setAttribute('opacity',0);
+      spP.setAttribute('opacity',1); spP.setAttribute('transform',`translate(${x},${y-8}) scale(${flip},1)`);
+    } else {
+      spV.textContent = MODE_ICON[st.mode];
+      spV.setAttribute('opacity',1); spV.setAttribute('transform',`translate(${x},${y-10}) scale(${flip},1)`);
+      spP.setAttribute('opacity',0);
+    }
+  } else {
+    const p = POI[st.from]; x=p.x; y=p.y;
+    spV.setAttribute('opacity',0);
+    spP.setAttribute('opacity',1); spP.setAttribute('transform',`translate(${x},${y-16})`);
+  }
+  // 清除非当前酒店 pulse
+  for (const k in poiDots){ if (k!==st.from || st.mode!=='sleep') poiDots[k].classList.remove('pulse'); }
+
+  // 跟随标签
+  const sp = svg2wrap(x, y-26);
+  tag.style.left = sp.x+'px'; tag.style.top = sp.y+'px'; tag.style.opacity = 1;
+
+  // 时钟
+  document.getElementById('c-date').textContent = `${d.date} ${d.wd} · D${di+1}`;
+  document.getElementById('c-time').textContent = fmtH(h);
+  document.getElementById('c-phase').textContent = phaseTxt(region, h, sky.stars) + (region==='trom'?' · 特罗姆瑟':region==='osl'?' · 奥斯陆':' · 冰岛');
+
+  // 已访问点位
+  const abs = di*24 + h;
+  DAYS.forEach((dd,didx)=>dd.steps.forEach(s=>{
+    const end = didx*24 + s.t1;
+    [s.from,s.to].forEach(k=>{
+      if (poiDots[k] && end<=abs) { poiDots[k].classList.add('visited'); poiLbls[k].classList.add('visited'); }
+    });
+  }));
+
+  // 进度条
+  if (!dragging){ scrub.value = Math.round(T*100); scrub.style.setProperty('--p',(T/13*100)+'%'); }
+
+  requestAnimationFrame(frame);
+}
+
+/* ══════════ 控件 ══════════ */
+document.getElementById('btn-play').onclick = ()=>{
+  if (T>=12.999){ T=0; playing=true; document.getElementById('btn-play').textContent='⏸ 暂停'; return; }
+  playing = !playing;
+  document.getElementById('btn-play').textContent = playing?'⏸ 暂停':'▶ 播放';
+};
+document.getElementById('btn-prev').onclick = ()=>{ T = Math.max(0, Math.floor(T)-1+0.145); };
+document.getElementById('btn-next').onclick = ()=>{ T = Math.min(12.145, Math.floor(T)+1+0.145); };
+document.getElementById('btn-speed').onclick = (e)=>{
+  speed = speed===1?2:speed===2?4:1; e.target.textContent = speed+'×';
+};
+scrub.addEventListener('pointerdown',()=>dragging=true);
+scrub.addEventListener('pointerup',()=>dragging=false);
+scrub.addEventListener('input',()=>{ T = scrub.value/100; });
+
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
