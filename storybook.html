@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冰岛 × 挪威 · 北极绘本</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:#f7f1e3; --ink:#4a4238; --soft:#8a7f70; --accent:#d9705f;
+    --sky:#a8c8dc; --card:#fffdf7; --line:#e0d5c0;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { height:100%; }
+  body {
+    font-family:"Yuanti SC","YouYuan","PingFang SC",sans-serif;
+    background:var(--paper); color:var(--ink); overflow:hidden;
+    display:flex; flex-direction:column; align-items:center;
+    background-image:radial-gradient(ellipse at 20% 10%, rgba(168,200,220,.25), transparent 55%),
+                     radial-gradient(ellipse at 85% 85%, rgba(217,112,95,.12), transparent 50%);
+  }
+  /* ── 章节头 ── */
+  header {
+    width:min(1240px,100vw); display:flex; justify-content:space-between; align-items:flex-end;
+    padding:14px 24px 6px;
+  }
+  .chapter { font-family:"Ma Shan Zheng","Yuanti SC",cursive; }
+  .chapter .c-no { font-size:14px; color:var(--accent); letter-spacing:3px; line-height:1.4; }
+  .chapter h1 { font-size:30px; font-weight:400; letter-spacing:2px; line-height:1.25; margin-top:8px; }
+  .clockbox { text-align:right; }
+  .clockbox .time { font-family:"Gaegu","Yuanti SC",cursive; font-size:30px; font-weight:700; color:var(--ink); }
+  .clockbox .date { font-size:13px; color:var(--soft); letter-spacing:1px; }
+
+  /* ── 主体：插画 + 画廊 ── */
+  #book {
+    width:min(1240px,100vw); flex:1; min-height:0; display:flex; gap:18px; padding:6px 24px 4px;
+  }
+  #page {
+    flex:1; min-width:0; position:relative; border-radius:22px; overflow:hidden;
+    background:linear-gradient(180deg,#bcd8ea,#eef3f0);
+    border:1px solid var(--line);
+    box-shadow:0 10px 30px rgba(74,66,56,.12), inset 0 0 0 6px rgba(255,253,247,.5);
+    transition:opacity .45s;
+  }
+  #scene { position:absolute; inset:0; transition:opacity .45s; }
+  #scene.fadeout { opacity:0; }
+  #tint { position:absolute; inset:0; pointer-events:none; transition:background 1.2s; mix-blend-mode:multiply; }
+  /* 地名横幅 */
+  #placename {
+    position:absolute; top:16px; left:50%; transform:translateX(-50%);
+    font-family:"Ma Shan Zheng",cursive; font-size:26px; letter-spacing:4px; color:#3d362c;
+    background:rgba(255,253,247,.85); padding:6px 26px; border-radius:30px;
+    border:1px solid var(--line); box-shadow:0 3px 10px rgba(74,66,56,.12);
+    opacity:0; transition:opacity .6s; white-space:nowrap;
+  }
+  #placename.show { opacity:1; }
+  /* 换国家 */
+  #rflash {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(247,241,227,.92); z-index:8; opacity:0; pointer-events:none; transition:opacity .5s;
+    font-family:"Ma Shan Zheng",cursive; font-size:38px; letter-spacing:4px; color:#3d362c;
+  }
+  #rflash.show { opacity:1; }
+
+  /* ── 画廊（照片打开的地方） ── */
+  #gallery {
+    width:340px; flex-shrink:0; background:var(--card); border-radius:20px;
+    border:1px solid var(--line); box-shadow:0 10px 30px rgba(74,66,56,.12);
+    padding:14px; display:flex; flex-direction:column; gap:10px; position:relative;
+    transition:transform .4s, opacity .4s;
+  }
+  #gallery.pop { animation:gpop .5s ease; }
+  @keyframes gpop { 0% { transform:scale(.94); opacity:.3; } 100% { transform:scale(1); opacity:1; } }
+  #g-title { font-size:13px; letter-spacing:2px; color:var(--accent); text-align:center; }
+  #g-title b { font-family:"Ma Shan Zheng",cursive; font-size:19px; color:var(--ink); letter-spacing:2px; display:block; margin-top:2px; font-weight:400; }
+  #g-frame { position:relative; border-radius:12px; overflow:hidden; background:#dfe8ee; flex:1; min-height:200px; }
+  #g-img { width:100%; height:100%; object-fit:cover; display:block; position:absolute; inset:0; transition:opacity .5s; }
+  .g-arrow {
+    position:absolute; top:50%; transform:translateY(-50%); z-index:3;
+    width:32px; height:32px; border-radius:50%; border:none; cursor:pointer;
+    background:rgba(255,253,247,.9); color:var(--ink); font-size:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.2); transition:transform .15s;
+  }
+  .g-arrow:hover { transform:translateY(-50%) scale(1.12); }
+  #g-prev { left:8px; } #g-next { right:8px; }
+  #g-cap { font-size:13.5px; color:var(--soft); text-align:center; min-height:20px; letter-spacing:.5px; }
+  #g-dots { display:flex; justify-content:center; gap:6px; }
+  .g-dot { width:7px; height:7px; border-radius:50%; background:#d8cfbc; cursor:pointer; transition:all .2s; }
+  .g-dot.now { background:var(--accent); transform:scale(1.3); }
+  #g-note { font-size:11px; color:#b8ad99; text-align:center; letter-spacing:1px; }
+
+  /* ── 叙事卡 ── */
+  #story {
+    width:min(1240px,100vw); padding:8px 24px;
+  }
+  #story-card {
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    box-shadow:0 6px 20px rgba(74,66,56,.1); padding:12px 22px 14px;
+    display:flex; gap:16px; align-items:baseline;
+  }
+  #story-card .s-head { font-size:12.5px; color:var(--accent); letter-spacing:2px; white-space:nowrap; }
+  #story-card .s-text { font-size:17px; letter-spacing:1px; line-height:1.5; }
+  #story-card .s-text::after { content:"✎"; margin-left:8px; color:#c8bda8; animation:blink 1.2s steps(2) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+
+  /* ── 控制 ── */
+  #controls { width:min(1240px,100vw); padding:4px 24px 14px; }
+  #scrub { width:100%; -webkit-appearance:none; height:6px; border-radius:3px; outline:none;
+    background:linear-gradient(90deg,var(--accent) var(--p,0%),#e0d5c0 var(--p,0%)); }
+  #scrub::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+    background:var(--card); border:3px solid var(--accent); cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,.2); }
+  #ctrl-row { display:flex; align-items:center; gap:8px; margin-top:8px; flex-wrap:wrap; }
+  .cbtn {
+    font-family:inherit; font-size:14px; cursor:pointer; letter-spacing:1px;
+    background:var(--card); color:var(--ink); border:1.5px solid var(--line);
+    padding:7px 16px; border-radius:20px; box-shadow:0 2px 6px rgba(74,66,56,.1);
+    transition:all .15s;
+  }
+  .cbtn:hover { border-color:var(--accent); color:var(--accent); }
+  #daychips { display:flex; gap:5px; flex-wrap:wrap; margin-left:auto; }
+  .chip {
+    font-size:11.5px; min-width:34px; text-align:center; padding:5px 6px; border-radius:12px;
+    background:var(--card); color:var(--soft); cursor:pointer; border:1.5px solid var(--line); transition:all .15s;
+  }
+  .chip.now { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .chip.past { opacity:.5; }
+
+  @media (max-width:900px) {
+    body { overflow:auto; }
+    #book { flex-direction:column; }
+    #page { height:44vh; }
+    #gallery { width:100%; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="chapter">
+      <div class="c-no" id="c-no">第一天 · DAY 1/13</div>
+      <h1 id="c-title">抵达 + 蓝湖</h1>
+    </div>
+    <div class="clockbox">
+      <div class="time" id="h-clock">00:00</div>
+      <div class="date" id="h-date">1月11日 周一 · 冰岛</div>
+    </div>
+  </header>
+
+  <div id="book">
+    <div id="page">
+      <div id="scene"></div>
+      <div id="tint"></div>
+      <div id="placename"></div>
+      <div id="rflash"></div>
+    </div>
+    <div id="gallery">
+      <div id="g-title">这个地方长这样<b id="g-place">蓝湖</b></div>
+      <div id="g-frame">
+        <img id="g-img" alt="">
+        <button class="g-arrow" id="g-prev">‹</button>
+        <button class="g-arrow" id="g-next">›</button>
+      </div>
+      <div id="g-cap"></div>
+      <div id="g-dots"></div>
+      <div id="g-note">📷 实景照片 · 维基百科 · 自动轮播，也可以自己翻</div>
+    </div>
+  </div>
+
+  <div id="story">
+    <div id="story-card">
+      <span class="s-head" id="s-head">D1 · 1月11日 周一</span>
+      <span class="s-text" id="s-text"></span>
+    </div>
+  </div>
+
+  <div id="controls">
+    <input type="range" id="scrub" min="0" max="1299" value="0">
+    <div id="ctrl-row">
+      <button class="cbtn" id="btn-play">⏸ 暂停</button>
+      <button class="cbtn" id="btn-prev">← 前一天</button>
+      <button class="cbtn" id="btn-next">后一天 →</button>
+      <button class="cbtn" id="btn-speed">1×</button>
+      <div id="daychips"></div>
+    </div>
+  </div>
+
+<script>
+const GALLERY = {"lagoon": ["https://thumb.wikimedia.org/wikipedia/en/thumb/0/00/Blue_Lagoon_Main_Building.JPG/1280px-Blue_Lagoon_Main_Building.JPG", "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/BlueLagoon_Noface.jpg/1280px-BlueLagoon_Noface.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Grindavik_area_annotated.jpg/1280px-Grindavik_area_annotated.jpg"], "thing": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/%C3%9Eingvellir_from_the_information_centre.JPG/1280px-%C3%9Eingvellir_from_the_information_centre.JPG", "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/Thingvellir.jpg/1280px-Thingvellir.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/World_Heritage_plaque_at_%C3%9Eingvellir_National_Park.jpg/1280px-World_Heritage_plaque_at_%C3%9Eingvellir_National_Park.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Ca%C3%B1%C3%B3n_Silfra%2C_Parque_Nacional_de_%C3%9Eingvellir%2C_Su%C3%B0urland%2C_Islandia%2C_2014-08-16%2C_DD_055.JPG/1280px-Ca%C3%B1%C3%B3n_Silfra%2C_Parque_Nacional_de_%C3%9Eingvellir%2C_Su%C3%B0urland%2C_Islandia%2C_2014-08-16%2C_DD_055.JPG"], "geysir": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Erupting_geysir.jpg/640px-Erupting_geysir.jpg"], "gullfoss": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Gullfoss_from_the_Air_%28cropped%29.jpg/1280px-Gullfoss_from_the_Air_%28cropped%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Iceland_-_2017-02-22_-_Gullfoss_-_3684.jpg/1280px-Iceland_-_2017-02-22_-_Gullfoss_-_3684.jpg"], "skalakot": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/043_S%C3%A6var_fr%C3%A1_Stangarholti.jpg/1280px-043_S%C3%A6var_fr%C3%A1_Stangarholti.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/IcelandicHorseInWinter.jpg/1280px-IcelandicHorseInWinter.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/271_Happad%C3%ADs_fr%C3%A1_Stangarholti.jpg/500px-271_Happad%C3%ADs_fr%C3%A1_Stangarholti.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Icelandic_mare_and_foal1.jpg/1280px-Icelandic_mare_and_foal1.jpg"], "selja": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Idyllic_landscape_with_a_waterfall_%28Unsplash%29.jpg/1280px-Idyllic_landscape_with_a_waterfall_%28Unsplash%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Premises_of_Seljalandsfoss_25.jpg/250px-Premises_of_Seljalandsfoss_25.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Icland_Seljalandsfoss_Luftbild_Sept_2019_1.jpg/250px-Icland_Seljalandsfoss_Luftbild_Sept_2019_1.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Seljalandfoss_at_night.jpg/250px-Seljalandfoss_at_night.jpg"], "skoga": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/2008-05-24_35_Sk%C3%B3gafoss.jpg/1280px-2008-05-24_35_Sk%C3%B3gafoss.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/Climbing_Skogafoss_%28184087143%29.jpeg/250px-Climbing_Skogafoss_%28184087143%29.jpeg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Earth%27s_Hair_-_Flickr_-_FerTravelPhoto.jpg/500px-Earth%27s_Hair_-_Flickr_-_FerTravelPhoto.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Skogafoss_At_Night_%28167821181%29.jpeg/960px-Skogafoss_At_Night_%28167821181%29.jpeg"], "black": ["https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Reynisfjara_Beach_Looking_West_Towards_Dyrh%C3%B3laey.jpg/1280px-Reynisfjara_Beach_Looking_West_Towards_Dyrh%C3%B3laey.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/H%C3%A1lsanefshellir_Cave_at_Reynisfjara_Beach.jpg/1280px-H%C3%A1lsanefshellir_Cave_at_Reynisfjara_Beach.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Eyjafjallaj%C3%B6kull_Volcano_seen_from_Reynisfjara_Beach.jpg/1280px-Eyjafjallaj%C3%B6kull_Volcano_seen_from_Reynisfjara_Beach.jpg", "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Reynisfjara_Beach_Hazards_Sign.jpg/1280px-Reynisfjara_Beach_Hazards_Sign.jpg"], "jokul": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/J%C3%B6kuls%C3%A1rl%C3%B3n_lagoon_in_southeastern_Iceland.jpg/1280px-J%C3%B6kuls%C3%A1rl%C3%B3n_lagoon_in_southeastern_Iceland.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Vatnaj%C3%B6kull_glacier.jpg/1280px-Vatnaj%C3%B6kull_glacier.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Stercorarius_parasiticus-pjt.jpg/1280px-Stercorarius_parasiticus-pjt.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Phoques_communs_sur_le_Jokulsarlon_en_Islande.jpg/1280px-Phoques_communs_sur_le_Jokulsarlon_en_Islande.jpg"], "rkv": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Hallgrimskirkja_mai_2026.jpg/1280px-Hallgrimskirkja_mai_2026.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/ETH-BIB_Com_L26-0330-0020-0003_Hallgrimskirkja_xx0677.jpg/1280px-ETH-BIB_Com_L26-0330-0020-0003_Hallgrimskirkja_xx0677.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/View_from_the_top_of_Hallgr%C3%ADmskirkja.JPG/500px-View_from_the_top_of_Hallgr%C3%ADmskirkja.JPG", "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Hallgr%C3%ADmskirkja_-_Last_Christmas_%283160371678%29.jpg/500px-Hallgr%C3%ADmskirkja_-_Last_Christmas_%283160371678%29.jpg"], "kef": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/SSJ100_Keflavik_runways_%285160518757%29.jpg/1280px-SSJ100_Keflavik_runways_%285160518757%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/2006-05-27-082806_Iceland_Keflav%C3%ADk.jpg/1280px-2006-05-27-082806_Iceland_Keflav%C3%ADk.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Keflav%C3%ADk_International_Airport_%28seen_from_runway%29.jpg/1280px-Keflav%C3%ADk_International_Airport_%28seen_from_runway%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Keflav%C3%ADk_Airport_interior_2018.jpg/1280px-Keflav%C3%ADk_Airport_interior_2018.jpg"], "tromso": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Troms%C3%B8_sentrum_%285835702754%29.jpg/1280px-Troms%C3%B8_sentrum_%285835702754%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Troms%C3%B8_Docks_%28From_Above%29.jpg/1280px-Troms%C3%B8_Docks_%28From_Above%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Hurtigruten_Polarlys.jpg/1280px-Hurtigruten_Polarlys.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Ishavskatedralen_Troms%C3%B8.jpg/1280px-Ishavskatedralen_Troms%C3%B8.jpg"], "cable": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Fjellheisen%2C_Troms%C3%B8_2019.jpg/1280px-Fjellheisen%2C_Troms%C3%B8_2019.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Fjellheisen_Upper_Station_-_Troms%C3%B8%2C_Norway_2023-07-08_%2802%29.jpg/1280px-Fjellheisen_Upper_Station_-_Troms%C3%B8%2C_Norway_2023-07-08_%2802%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Troms%C3%B8_2013_06_05_3734_%2810118181034%29.jpg/1280px-Troms%C3%B8_2013_06_05_3734_%2810118181034%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Panorama_fjellheisen-improved.jpg/1280px-Panorama_fjellheisen-improved.jpg"], "church": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Arctic_Cathedral_in_Tromsoe.jpg/1280px-Arctic_Cathedral_in_Tromsoe.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Tromsdalen_Church_South.jpg/250px-Tromsdalen_Church_South.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Tromsdalen_Church_mosaic.jpg/250px-Tromsdalen_Church_mosaic.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Troms%C3%B8_2015.jpg/250px-Troms%C3%B8_2015.jpg"], "whale": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Killerwhales_jumping.jpg/1280px-Killerwhales_jumping.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Orcinus_citoniensis.JPG/1280px-Orcinus_citoniensis.JPG", "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Naturalis_Biodiversity_Center_-_Museum_-_Workshop_-_Lecture_hall%2C_killer_whale_skeleton_suspended_from_ceiling2.jpg/1280px-Naturalis_Biodiversity_Center_-_Museum_-_Workshop_-_Lecture_hall%2C_killer_whale_skeleton_suspended_from_ceiling2.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Orca_porpoising.jpg/500px-Orca_porpoising.jpg"], "ers": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Arn%C3%B8yh%C3%B8gda%2C_Laukslettinden%2C_Tjuvtinden_%26_R%C3%B8dhetta%2C_2012_March.jpg/1280px-Arn%C3%B8yh%C3%B8gda%2C_Laukslettinden%2C_Tjuvtinden_%26_R%C3%B8dhetta%2C_2012_March.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Fylkesvei_292%2C_Piggtinden.JPG/1280px-Fylkesvei_292%2C_Piggtinden.JPG", "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Balsfjorden_%26_Jiehkkev%C3%A1rri.jpg/1280px-Balsfjorden_%26_Jiehkkev%C3%A1rri.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Musvaer_troms_norway.jpg/1280px-Musvaer_troms_norway.jpg"], "husky": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Trond_Hansen_%288436514576%29.jpg/1280px-Trond_Hansen_%288436514576%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/Fur_Trader_in_Toboggan_oil_painting_by_Cornelius_Krieghoff.jpg/500px-Fur_Trader_in_Toboggan_oil_painting_by_Cornelius_Krieghoff.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/%D0%A7%D1%83%D0%BA%D0%BE%D1%82%D1%81%D0%BA%D0%B0%D1%8F_%D0%B8%D0%BB%D0%B8_%D0%BA%D0%BE%D0%BB%D1%8B%D0%BC%D1%81%D0%BA%D0%B0%D1%8F_%D0%BD%D0%B0%D1%80%D1%82%D0%B0.jpg/1280px-%D0%A7%D1%83%D0%BA%D0%BE%D1%82%D1%81%D0%BA%D0%B0%D1%8F_%D0%B8%D0%BB%D0%B8_%D0%BA%D0%BE%D0%BB%D1%8B%D0%BC%D1%81%D0%BA%D0%B0%D1%8F_%D0%BD%D0%B0%D1%80%D1%82%D0%B0.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Kulusuk-sled-and-kayak.jpg/1280px-Kulusuk-sled-and-kayak.jpg"], "aurora": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Aurora_borealis_over_Eielson_Air_Force_Base%2C_Alaska.jpg/1280px-Aurora_borealis_over_Eielson_Air_Force_Base%2C_Alaska.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Flames_in_the_sky.jpg/1280px-Flames_in_the_sky.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/G5_aurora_over_Tuntorp%2C_Lysekil_Municipality_15.jpg/1280px-G5_aurora_over_Tuntorp%2C_Lysekil_Municipality_15.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/Aurora_australis_ISS.jpg/500px-Aurora_australis_ISS.jpg"], "sommerro": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/Winter_%286789041074%29.jpg/1280px-Winter_%286789041074%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Nationaltheatret_evening.jpg/1280px-Nationaltheatret_evening.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Boats_in_oslo.jpg/1280px-Boats_in_oslo.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Oslo_%286789041914%29.jpg/1280px-Oslo_%286789041914%29.jpg"], "oslcity": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Oslo_Opera_House_-_2025.jpg/1280px-Oslo_Opera_House_-_2025.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Oslo_Opera_House_2023_2.jpg/1280px-Oslo_Opera_House_2023_2.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Oslo_-_Opera_House.jpg/960px-Oslo_-_Opera_House.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Oslo_-_Opera_House_-_2026.jpg/960px-Oslo_-_Opera_House_-_2026.jpg"], "kontrast": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Grunerlokka_Oslo.jpg/1280px-Grunerlokka_Oslo.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Olaf_Ryes_plass_vinter_skumring.jpg/1280px-Olaf_Ryes_plass_vinter_skumring.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Olaf_Ryes_plass_10.jpg/1280px-Olaf_Ryes_plass_10.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Olaf_Ryes_plass_9.jpg/1280px-Olaf_Ryes_plass_9.jpg"], "tos": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Troms%C3%B8_airport%2C_Norway.jpg/1280px-Troms%C3%B8_airport%2C_Norway.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/SAS_DC-7C._Aircraft_on_the_ground.jpg/1280px-SAS_DC-7C._Aircraft_on_the_ground.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Troms%C3%B6_airport_IMG_9060.JPG/1280px-Troms%C3%B6_airport_IMG_9060.JPG", "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Troms%C3%B8_Airport_check-in.jpg/500px-Troms%C3%B8_Airport_check-in.jpg"], "osl": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Oslo_Airport_terminal_night_view.jpg/1280px-Oslo_Airport_terminal_night_view.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Soldiers_at_Gardermoen%2C_1904.jpg/500px-Soldiers_at_Gardermoen%2C_1904.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/OSLpass.JPG/500px-OSLpass.JPG", "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Oslo_airport_Check_in_area.jpg/1280px-Oslo_airport_Check_in_area.jpg"], "pek": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Aerial_view_of_Beijing_Capital_International_Airport_%28cropped%29.jpg/500px-Aerial_view_of_Beijing_Capital_International_Airport_%28cropped%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Beijing_Capital_International_Airport_in_1959.jpg/500px-Beijing_Capital_International_Airport_in_1959.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Arrival_of_Air_Force_One_in_Peking_-_NARA_-_194412.jpg/1280px-Arrival_of_Air_Force_One_in_Peking_-_NARA_-_194412.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Air_China_Boeing_747-4J6_B-2464_%2824628702009%29.jpg/1280px-Air_China_Boeing_747-4J6_B-2464_%2824628702009%29.jpg"], "home": ["https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Skyline_of_Beijing_CBD_with_B-5906_approaching_%2820211016171955%29_%281%29.jpg/1280px-Skyline_of_Beijing_CBD_with_B-5906_approaching_%2820211016171955%29_%281%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/%E6%99%AF%E5%B1%B1%E5%85%AC%E5%9B%AD_%2820315852831%29-_cropped.jpg/1280px-%E6%99%AF%E5%B1%B1%E5%85%AC%E5%9B%AD_%2820315852831%29-_cropped.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Temple_of_Heaven_-_Hall_of_Prayer_for_Good_Harvests_01_%28cropped%29.jpg/1280px-Temple_of_Heaven_-_Hall_of_Prayer_for_Good_Harvests_01_%28cropped%29.jpg", "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/Peking_Grosse_Mauer-20071019-RM-114506.jpg/1280px-Peking_Grosse_Mauer-20071019-RM-114506.jpg"]};
+const LOC = {
+  pek:{sc:'city',n:'北京',b:'北京 · 出发'},
+  kef:{sc:'airport',n:'凯夫拉维克机场',b:'KEF 凯夫拉维克机场'},
+  lagoon:{sc:'lagoon',n:'蓝湖',b:'蓝湖 THE RETREAT'},
+  thing:{sc:'rift',n:'辛格维利尔',b:'辛格维利尔国家公园'},
+  geysir:{sc:'geysir',n:'间歇泉',b:'盖歇尔间歇泉'},
+  gullfoss:{sc:'waterfall2',n:'黄金瀑布',b:'黄金瀑布 GULLFOSS'},
+  skalakot:{sc:'manor',n:'Skálakot 庄园',b:'SKÁLAKOT 庄园'},
+  selja:{sc:'waterfall',n:'塞里雅兰瀑布',b:'塞里雅兰瀑布'},
+  skoga:{sc:'waterfall',n:'斯科加瀑布',b:'斯科加瀑布'},
+  black:{sc:'blacksand',n:'黑沙滩',b:'REYNISFJARA 黑沙滩'},
+  jokul:{sc:'glacier',n:'冰河湖',b:'冰河湖 JÖKULSÁRLÓN'},
+  rkv:{sc:'town',n:'雷克雅未克',b:'雷克雅未克市区'},
+  tos:{sc:'airport',n:'特罗姆瑟机场',b:'TOS 特罗姆瑟机场'},
+  tromso:{sc:'harbor',n:'特罗姆瑟',b:'特罗姆瑟 TROMSØ'},
+  cable:{sc:'cable',n:'缆车',b:'FJELLHEISEN 缆车'},
+  church:{sc:'cathedral',n:'北极大教堂',b:'北极大教堂'},
+  whale:{sc:'sea',n:'观鲸峡湾',b:'观鲸峡湾'},
+  ers:{sc:'fjordtown',n:'Ersfjordbotn',b:'ERSFJORDBOTN 峡湾小镇'},
+  husky:{sc:'camp',n:'雪橇营地',b:'狗拉雪橇营地'},
+  aurora:{sc:'snowfield',n:'极光观测点',b:'极光观测点'},
+  sommerro:{sc:'hotel',n:'Sommerro',b:'SOMMERRO 酒店'},
+  oslcity:{sc:'opera',n:'歌剧院',b:'奥斯陆歌剧院'},
+  kontrast:{sc:'restaurant',n:'Kontrast',b:'KONTRAST 米二'},
+  osl:{sc:'airport',n:'奥斯陆机场',b:'OSL 奥斯陆机场'},
+  home:{sc:'city',n:'北京',b:'回家啦 🎉'}
+};
+
+/* ═════════ 行程数据（与看板一致） ═════════ */
+const DAYS = [
+ {date:'1月11日', wd:'周一', title:'抵达 + 蓝湖', region:'ice', steps:[
+   {t0:0,   t1:3.5,  mode:'plane', from:'pek',   to:'pek',   label:'北京 03:30 起飞（经停哥本哈根）', region:'ice'},
+   {t0:3.5, t1:11.25,mode:'plane', from:'pek',   to:'kef',   label:'国航 北京 → 雷克雅未克，11:15 落地', region:'ice'},
+   {t0:11.25,t1:11.75,mode:'car',  from:'kef',   to:'lagoon',label:'落地啦！包车 20 分钟直奔蓝湖'},
+   {t0:11.75,t1:17,  mode:'stay',  from:'lagoon',to:'lagoon',label:'入住 The Retreat · 私汤倒时差'},
+   {t0:17,  t1:18,   mode:'walk',  from:'lagoon',to:'lagoon',label:'蓝湖暮色散步 · 硅泥面膜'},
+   {t0:18,  t1:21,   mode:'stay',  from:'lagoon',to:'lagoon',label:'🍽 Moss 米其林一星（18:00 订位）'},
+   {t0:21,  t1:24,   mode:'sleep', from:'lagoon',to:'lagoon',label:'🏨 夜宿 The Retreat at Blue Lagoon'},
+ ]},
+ {date:'1月12日', wd:'周二', title:'蓝湖休整日（倒时差）', region:'ice', steps:[
+   {t0:0,   t1:9,    mode:'sleep', from:'lagoon',to:'lagoon',label:'🏨 夜宿 The Retreat'},
+   {t0:9,   t1:11.5, mode:'stay',  from:'lagoon',to:'lagoon',label:'晨泡私汤 · 几乎没有人'},
+   {t0:11.5,t1:14,   mode:'walk',  from:'lagoon',to:'lagoon',label:'熔岩原散步 + 蓝湖面膜'},
+   {t0:14,  t1:17,   mode:'stay',  from:'lagoon',to:'lagoon',label:'Retreat Spa · 干蒸 / 冷水池'},
+   {t0:17,  t1:18.5, mode:'walk',  from:'lagoon',to:'lagoon',label:'酒店 lounge 看雪发呆'},
+   {t0:18.5,t1:21,   mode:'stay',  from:'lagoon',to:'lagoon',label:'🍽 Lava 餐厅（蓝湖景观位）'},
+   {t0:21,  t1:24,   mode:'sleep', from:'lagoon',to:'lagoon',label:'🏨 夜宿 The Retreat'},
+ ]},
+ {date:'1月13日', wd:'周三', title:'黄金圈 → 住庄园', region:'ice', steps:[
+   {t0:0,   t1:9,    mode:'sleep', from:'lagoon',to:'lagoon',label:'🏨 夜宿 The Retreat'},
+   {t0:9,   t1:9.75, mode:'car',   from:'lagoon',to:'thing', label:'出发！黄金圈一日游（约 45min）'},
+   {t0:9.75,t1:11.75,mode:'walk',  from:'thing', to:'thing', label:'辛格维利尔 · 站在两大板块裂缝上'},
+   {t0:11.75,t1:12.75,mode:'car',  from:'thing', to:'geysir',label:'前往间歇泉'},
+   {t0:12.75,t1:14,  mode:'walk',  from:'geysir',to:'geysir',label:'盖歇尔间歇泉 · 几分钟喷一次'},
+   {t0:14,  t1:14.5, mode:'car',   from:'geysir',to:'gullfoss',label:'前往黄金瀑布'},
+   {t0:14.5,t1:15.75,mode:'walk',  from:'gullfoss',to:'gullfoss',label:'黄金瀑布 · 双层跌水超震撼'},
+   {t0:15.75,t1:16.5,mode:'car',   from:'gullfoss',to:'skalakot',label:'南下，今晚住百年庄园'},
+   {t0:16.5,t1:18,   mode:'walk',  from:'skalakot',to:'skalakot',label:'庄园逛逛 · 撸冰岛马'},
+   {t0:18,  t1:20.5, mode:'stay',  from:'skalakot',to:'skalakot',label:'🍽 Skálakot 庄园晚餐（农场直供）'},
+   {t0:20.5,t1:24,   mode:'sleep', from:'skalakot',to:'skalakot',label:'🏨 夜宿 Skálakot Manor'},
+ ]},
+ {date:'1月14日', wd:'周四', title:'南岸瀑布 → 黑沙滩 → 冰河湖', region:'ice', steps:[
+   {t0:0,   t1:8.5,  mode:'sleep', from:'skalakot',to:'skalakot',label:'🏨 夜宿 Skálakot Manor'},
+   {t0:8.5, t1:9,    mode:'car',   from:'skalakot',to:'selja', label:'出发！南岸瀑布三连'},
+   {t0:9,   t1:10,   mode:'walk',  from:'selja',  to:'selja',  label:'塞里雅兰瀑布 · 绕到水帘后面'},
+   {t0:10,  t1:10.5, mode:'car',   from:'selja',  to:'skoga',  label:'前往斯科加瀑布'},
+   {t0:10.5,t1:11.5, mode:'walk',  from:'skoga',  to:'skoga',  label:'斯科加瀑布 · 晴天有彩虹'},
+   {t0:11.5,t1:12.25,mode:'car',   from:'skoga',  to:'black',  label:'前往维克小镇'},
+   {t0:12.25,t1:14.5,mode:'walk',  from:'black',  to:'black',  label:'维克午餐 + Reynisfjara 黑沙滩（⚠️远离浪线）'},
+   {t0:14.5,t1:17.5, mode:'car',   from:'black',  to:'jokul',  label:'1 号公路一路向东 · 约 3 小时'},
+   {t0:17.5,t1:18.5, mode:'stay',  from:'jokul',  to:'jokul',  label:'入住 Hótel Jökulsárlón · 离冰河湖 8 分钟'},
+   {t0:18.5,t1:20.5, mode:'stay',  from:'jokul',  to:'jokul',  label:'🍽 酒店晚餐 · 户外泡池等极光'},
+   {t0:20.5,t1:24,   mode:'sleep', from:'jokul',  to:'jokul',  label:'🏨 夜宿 Hótel Jökulsárlón'},
+ ]},
+ {date:'1月15日', wd:'周五', title:'蓝冰洞（全程重头戏）', region:'ice', steps:[
+   {t0:0,   t1:8.75, mode:'sleep', from:'jokul',  to:'jokul',  label:'🏨 夜宿 Hótel Jökulsárlón'},
+   {t0:8.75,t1:9.5,  mode:'walk',  from:'jokul',  to:'jokul',  label:'8 分钟到冰洞集合点'},
+   {t0:9.5, t1:13.5, mode:'walk',  from:'jokul',  to:'jokul',  label:'🧊 蓝冰洞探险！9:30 团（天气差保底改 1/16）'},
+   {t0:13.5,t1:14.5, mode:'stay',  from:'jokul',  to:'jokul',  label:'回酒店暖一暖 + 午餐'},
+   {t0:14.5,t1:16.5, mode:'walk',  from:'jokul',  to:'jokul',  label:'冰河湖 + 钻石沙滩 · 日落前最美'},
+   {t0:16.5,t1:18.5, mode:'stay',  from:'jokul',  to:'jokul',  label:'酒店桑拿 · 休整'},
+   {t0:18.5,t1:20.5, mode:'stay',  from:'jokul',  to:'jokul',  label:'🍽 酒店晚餐'},
+   {t0:20.5,t1:24,   mode:'sleep', from:'jokul',  to:'jokul',  label:'🏨 夜宿 Hótel Jökulsárlón'},
+ ]},
+ {date:'1月16日', wd:'周六', title:'回雷市（车上补觉日）', region:'ice', steps:[
+   {t0:0,   t1:9,    mode:'sleep', from:'jokul',  to:'jokul',  label:'🏨 夜宿 Hótel Jökulsárlón'},
+   {t0:9,   t1:12,   mode:'car',   from:'jokul',  to:'black',  label:'返程南岸（全天 4.5-5h 车上补觉）'},
+   {t0:12,  t1:13,   mode:'walk',  from:'black',  to:'black',  label:'维克午餐 + 教堂山看海'},
+   {t0:13,  t1:16,   mode:'car',   from:'black',  to:'rkv',    label:'继续开，回雷克雅未克'},
+   {t0:16,  t1:19,   mode:'stay',  from:'rkv',    to:'rkv',    label:'入住 Consulate Hotel · 连住 2 晚'},
+   {t0:19,  t1:21.5, mode:'walk',  from:'rkv',    to:'rkv',    label:'🍽 Tides 19:30（Dill 主厨姊妹店，步行 6 分钟）'},
+   {t0:21.5,t1:24,   mode:'sleep', from:'rkv',    to:'rkv',    label:'🏨 夜宿 Consulate Hotel'},
+ ]},
+ {date:'1月17日', wd:'周日', title:'雷市全天 + Sky Lagoon', region:'ice', steps:[
+   {t0:0,   t1:10,   mode:'sleep', from:'rkv',    to:'rkv',    label:'🏨 夜宿 Consulate'},
+   {t0:10,  t1:12,   mode:'walk',  from:'rkv',    to:'rkv',    label:'哈尔格林姆教堂登顶看彩色屋顶'},
+   {t0:12,  t1:14,   mode:'walk',  from:'rkv',    to:'rkv',    label:'主街 Laugavegur 逛店 + 午餐'},
+   {t0:14,  t1:16.5, mode:'walk',  from:'rkv',    to:'rkv',    label:'哈帕音乐厅 + 太阳航海者雕塑'},
+   {t0:16.5,t1:19,   mode:'stay',  from:'rkv',    to:'rkv',    label:'Sky Lagoon 七步疗法（打车 10min）'},
+   {t0:19.5,t1:21.5, mode:'walk',  from:'rkv',    to:'rkv',    label:'🍽 Grillmarkaðurinn 烧烤市场 19:30'},
+   {t0:21.5,t1:24,   mode:'sleep', from:'rkv',    to:'rkv',    label:'🏨 夜宿 Consulate'},
+ ]},
+ {date:'1月18日', wd:'周一', title:'飞特罗姆瑟 + 缆车夜景', region:'trom', steps:[
+   {t0:0,   t1:4.5,  mode:'sleep', from:'rkv',    to:'rkv',    label:'🏨 夜宿 Consulate', region:'ice'},
+   {t0:4.5, t1:5.5,  mode:'car',   from:'rkv',    to:'kef',    label:'04:30 摸黑送机 · 冰岛包车结束', region:'ice'},
+   {t0:5.5, t1:7.8,  mode:'stay',  from:'kef',    to:'kef',    label:'KEF 值机 · 07:50 起飞', region:'ice'},
+   {t0:7.8, t1:12.75,mode:'plane', from:'kef',    to:'tos',    label:'冰岛航空直飞 2h55m（仅周一/周五有）', region:'trom'},
+   {t0:12.75,t1:13.25,mode:'car',  from:'tos',    to:'tromso', label:'机场 → 市区 15 分钟'},
+   {t0:13.25,t1:17,  mode:'stay',  from:'tromso', to:'tromso', label:'入住 Scandic · 连住 4 晚 · 港口散步'},
+   {t0:17,  t1:18.5, mode:'walk',  from:'tromso', to:'cable',  label:'Fjellheisen 缆车 · 山顶看全城亮灯'},
+   {t0:19.5,t1:21.5, mode:'stay',  from:'tromso', to:'tromso', label:'🍽 Arctandria 海鲜（鳕鱼舌 / 帝王蟹）'},
+   {t0:21.5,t1:24,   mode:'walk',  from:'tromso', to:'tromso', label:'🌌 码头蹲极光 · 第一晚'},
+ ]},
+ {date:'1月19日', wd:'周二', title:'市区 + 极光追猎团', region:'trom', steps:[
+   {t0:0,   t1:10,   mode:'sleep', from:'tromso', to:'tromso', label:'🏨 夜宿 Scandic'},
+   {t0:10,  t1:12.5, mode:'walk',  from:'tromso', to:'church', label:'北极大教堂 + 极地博物馆'},
+   {t0:12.5,t1:14.5, mode:'walk',  from:'church', to:'tromso', label:'🍽 Mathallen 美食广场午餐'},
+   {t0:14.5,t1:17,   mode:'walk',  from:'tromso', to:'tromso', label:'Kaffebønna 咖啡 · 备齐暖宝宝'},
+   {t0:18,  t1:18.75,mode:'car',   from:'tromso', to:'aurora', label:'极光团小巴 18:00 出发'},
+   {t0:18.75,t1:24,  mode:'stay',  from:'aurora', to:'aurora', label:'🌌 追极光！篝火晚餐 + 摄影跟拍（约 6h）'},
+ ]},
+ {date:'1月20日', wd:'周三', title:'峡湾观鲸', region:'trom', steps:[
+   {t0:0,   t1:8.5,  mode:'sleep', from:'tromso', to:'tromso', label:'🏨 夜宿 Scandic'},
+   {t0:8.5, t1:9,    mode:'walk',  from:'tromso', to:'tromso', label:'码头集合（酒店旁 2 分钟）'},
+   {t0:9,   t1:9.5,  mode:'boat',  from:'tromso', to:'whale',  label:'大船出峡湾'},
+   {t0:9.5, t1:14.5, mode:'stay',  from:'whale',  to:'whale',  label:'🐋 峡湾观鲸 5-6h · 虎鲸 / 座头鲸'},
+   {t0:14.5,t1:15,   mode:'boat',  from:'whale',  to:'tromso', label:'返航'},
+   {t0:15.5,t1:16,   mode:'car',   from:'tromso', to:'ers',    label:'打车 20min 去峡湾小镇'},
+   {t0:16,  t1:17.5, mode:'walk',  from:'ers',    to:'ers',    label:'Ersfjordbotn · 明信片机位'},
+   {t0:17.5,t1:18,   mode:'car',   from:'ers',    to:'tromso', label:'回市区'},
+   {t0:18.5,t1:20.5, mode:'stay',  from:'tromso', to:'tromso', label:"🍽 Bardus / Emma's（建议订位）"},
+   {t0:20.5,t1:24,   mode:'sleep', from:'tromso', to:'tromso', label:'🏨 夜宿 Scandic'},
+ ]},
+ {date:'1月21日', wd:'周四', title:'特罗姆瑟深度日', region:'trom', steps:[
+   {t0:0,   t1:9,    mode:'sleep', from:'tromso', to:'tromso', label:'🏨 夜宿 Scandic'},
+   {t0:9,   t1:9.75, mode:'car',   from:'tromso', to:'husky',  label:'营地接送（约 40min）'},
+   {t0:9.75,t1:13,   mode:'walk',  from:'husky',  to:'husky',  label:'🛷 狗拉雪橇！极夜蓝光里跑雪原（也可换驯鹿+萨米营）'},
+   {t0:13,  t1:13.75,mode:'car',   from:'husky',  to:'tromso', label:'回市区'},
+   {t0:14,  t1:16,   mode:'walk',  from:'tromso', to:'tromso', label:'Kaffebønna 咖啡 · 回酒店补觉'},
+   {t0:18,  t1:20,   mode:'stay',  from:'tromso', to:'tromso', label:'🍽 Skirri / Full Steam 海鲜（码头边）'},
+   {t0:21,  t1:24,   mode:'walk',  from:'tromso', to:'tromso', label:'🌌 码头蹲极光 · 第三晚'},
+ ]},
+ {date:'1月22日', wd:'周五', title:'飞奥斯陆 + 歌剧院 + 逛街', region:'osl', steps:[
+   {t0:0,   t1:7.75, mode:'sleep', from:'tromso', to:'tromso', label:'🏨 夜宿 Scandic', region:'trom'},
+   {t0:7.75,t1:8,    mode:'car',   from:'tromso', to:'tos',    label:'酒店 → TOS 15 分钟', region:'trom'},
+   {t0:8,   t1:9.5,  mode:'stay',  from:'tos',    to:'tos',    label:'值机 · 09:30 起飞', region:'trom'},
+   {t0:9.5, t1:11.5, mode:'plane', from:'tos',    to:'osl',    label:'TOS → OSL 约 2 小时', region:'osl'},
+   {t0:11.5,t1:12.25,mode:'car',   from:'osl',    to:'sommerro',label:'机场快线 20min 进城 · 寄存行李'},
+   {t0:12.25,t1:14,  mode:'stay',  from:'sommerro',to:'sommerro',label:'Ekspedisjonshallen 午餐（最出片大厅）'},
+   {t0:14,  t1:17,   mode:'walk',  from:'sommerro',to:'oslcity',label:'歌剧院屋顶随便走 + 卡尔约翰大街 → 阿克尔码头'},
+   {t0:17,  t1:19,   mode:'walk',  from:'oslcity',to:'sommerro',label:'回酒店换装休息'},
+   {t0:19,  t1:19.5, mode:'walk',  from:'sommerro',to:'kontrast',label:'前往 Vulkan 区'},
+   {t0:19.5,t1:22.5, mode:'stay',  from:'kontrast',to:'kontrast',label:'🍽 Kontrast 19:30 · 米二告别大餐（🔴 提前 3-6 周订）'},
+   {t0:22.5,t1:24,   mode:'sleep', from:'sommerro',to:'sommerro',label:'🏨 夜宿 Sommerro'},
+ ]},
+ {date:'1月23日', wd:'周六', title:'回国', region:'osl', steps:[
+   {t0:0,   t1:9,    mode:'sleep', from:'sommerro',to:'sommerro',label:'🏨 夜宿 Sommerro'},
+   {t0:9,   t1:9.75, mode:'stay',  from:'sommerro',to:'sommerro',label:'退房 · 和朋友一起去机场'},
+   {t0:9.75,t1:10.5, mode:'car',   from:'sommerro',to:'osl',    label:'机场快线 / 打车 45min'},
+   {t0:10.5,t1:12.5, mode:'stay',  from:'osl',    to:'osl',    label:'值机 · 一起 12:30 海航飞北京'},
+   {t0:12.5,t1:24,   mode:'plane', from:'osl',    to:'home',   label:'✈️ 一起回家！🎉'},
+ ]},
+];
+
+/* 每张照片的中文图注（循环使用） */
+const CAPS = {
+  lagoon:['奶蓝色地热海水 · 蒸汽缭绕','The Retreat 私汤区','熔岩原环抱的蓝湖'],
+  thing:['站在北美与欧亚板块裂缝上','Öxarárfoss 瀑布','议会旧址的雪原','冬季的辛格维利尔'],
+  geysir:['Strokkur 每隔几分钟喷一次'],
+  gullfoss:['双层跌水的黄金瀑布','冬日冰封的黄金瀑布'],
+  skalakot:['百年庄园 · 草顶木屋','庄园里的冰岛马','斯卡拉科特山谷','农场直供的晚餐'],
+  selja:['可以绕到水帘后面','冬天的塞里雅兰','水帘洞视角','瀑布下的步道'],
+  skoga:['斯科加瀑布 · 晴天有彩虹','60 米宽的跌落','瀑布顶观景台','冬季的斯科加'],
+  black:['玄武岩柱与黑沙滩','海蚀柱 Reynisdrangar','⚠️ 远离浪线','黑沙滩的浪'],
+  jokul:['冰河湖上的浮冰','钻石沙滩','蓝冰洞内部','冰川与湖水'],
+  rkv:['哈尔格林姆教堂','雷市彩色小屋','哈帕音乐厅','太阳航海者雕塑'],
+  kef:['凯夫拉维克机场','KEF 跑道','冰岛航空','到达大厅'],
+  tromso:['特罗姆瑟港全景','从空中看码头','海达路德邮轮夜航','北极大教堂夜景'],
+  cable:['Fjellheisen 缆车','山顶看全城亮灯','特罗姆瑟全景','雪顶观景台'],
+  church:['北极大教堂','三角形冰白立面','教堂夜景','内部玻璃花窗'],
+  whale:['虎鲸跃出水面','座头鲸摆尾','峡湾里的鲸群','观鲸船'],
+  ers:['Ersfjordbotn 明信片机位','峡湾小镇','雪山倒影','红色小木屋'],
+  husky:['狗拉雪橇出发！','精力旺盛的哈士奇','雪原上的雪橇队','营地的小狗们'],
+  aurora:['极光舞动','绿光铺满夜空','篝火旁等极光','极光下的雪原'],
+  sommerro:['阿克尔码头冬景','国家剧院夜景（酒店附近）','奥斯陆港湾','冬日码头'],
+  oslcity:['奥斯陆歌剧院 · 屋顶随便走','卡尔约翰大街','阿克尔码头','歌剧院夜景'],
+  kontrast:['Grünerløkka 街区 · Kontrast 在这','Olaf Ryes 广场冬夜','Vulkan 区街景','街区漫步'],
+  tos:['特罗姆瑟机场','TOS 跑道','雪山边的机场','候机厅'],
+  osl:['奥斯陆机场','OSL 航站楼','值机中','登机口'],
+  pek:['北京首都机场','出发！','国航商务舱','首都机场夜景'],
+  home:['北京 · 到家啦','熟悉的 skyline','欢迎回家 🎉','旅程圆满结束'],
+};
+
+/* ═════════ 天空调色板（绘本奶色系 · 1 月真实日照） ═════════ */
+const SKY = {
+  ice: [ [0,52,64,100, 96,106,142, 1,-1], [9.5,70,84,120, 120,128,160, .5,-1], [11,150,178,208, 244,214,180, 0,.08],
+         [13,168,200,226, 240,240,228, 0,.7], [15.5,172,182,208, 248,214,164, 0,.3], [16.8,130,116,150, 238,164,140, .1,-.05],
+         [18.2,60,70,104, 104,110,146, .8,-1], [24,52,64,100, 96,106,142, 1,-1] ],
+  trom:[ [0,40,50,84, 80,90,124, 1,-1], [9,54,66,102, 100,110,144, .5,-1], [11,96,112,150, 150,142,170, .1,-1],
+         [13,110,126,160, 168,154,176, 0,-1], [15,80,92,130, 120,110,146, .3,-1], [16.5,48,58,92, 86,96,130, 1,-1],
+         [24,40,50,84, 80,90,124, 1,-1] ],
+  osl: [ [0,48,60,96, 92,102,138, 1,-1], [8.5,64,78,114, 116,124,158, .4,-1], [9.5,148,172,202, 244,212,178, 0,.1],
+         [12,166,198,224, 242,240,230, 0,.75], [15.3,170,180,206, 248,212,162, 0,.3], [16.3,126,114,148, 236,160,140, .15,-.05],
+         [18,56,66,100, 100,106,142, .9,-1], [24,48,60,96, 92,102,138, 1,-1] ],
+};
+function skyAt(region, h){
+  const kf = SKY[region]||SKY.ice; let a=kf[0], b=kf[kf.length-1];
+  for (let i=0;i<kf.length-1;i++) if (h>=kf[i][0]&&h<=kf[i+1][0]){ a=kf[i]; b=kf[i+1]; break; }
+  const f = Math.min(1,Math.max(0,(h-a[0])/((b[0]-a[0])||1)));
+  const L=(x,y)=>Math.round(x+(y-x)*f);
+  return { top:[L(a[1],b[1]),L(a[2],b[2]),L(a[3],b[3])], bot:[L(a[4],b[4]),L(a[5],b[5]),L(a[6],b[6])],
+           stars:a[7]+(b[7]-a[7])*f, sun:a[8]+(b[8]-a[8])*f };
+}
+const REGION_TXT = {ice:'冰岛 🇮🇸', trom:'挪威 · 特罗姆瑟 🇳🇴', osl:'挪威 · 奥斯陆 🇳🇴'};
+const CN = ['一','二','三','四','五','六','七','八','九','十','十一','十二','十三'];
+
+/* ═════════ 绘本 SVG 场景 ═════════ */
+function grad(id,a,b){return `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgb(${a})"/><stop offset="1" stop-color="rgb(${b})"/></linearGradient>`}
+function starsSvg(st){
+  if (st<0.12) return '';
+  let s='';
+  for (let i=0;i<28;i++){ const x=(i*173)%600, y=(i*89)%170+8, r=1+(i%3)*0.5;
+    s+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#fffdf7" opacity="${(st*(0.5+(i%4)*0.15)).toFixed(2)}"/>`; }
+  return s;
+}
+function celestial(sky){
+  if (sky.sun>=0){ const x=90+sky.sun*420, y=175-115*Math.sin(Math.PI*Math.min(1,sky.sun));
+    return `<circle cx="${x}" cy="${Math.max(40,y)}" r="24" fill="#ffd98e" opacity=".95"/><circle cx="${x}" cy="${Math.max(40,y)}" r="33" fill="#ffd98e" opacity=".25"/>`; }
+  if (sky.stars>0.35) return `<circle cx="480" cy="64" r="20" fill="#fdf6e3"/><circle cx="473" cy="58" r="5" fill="#e8dfc8"/><circle cx="487" cy="70" r="3.5" fill="#e8dfc8"/>`;
+  return '';
+}
+function cloud(cx,cy,s,op){return `<g opacity="${op}" fill="#ffffff"><ellipse cx="${cx}" cy="${cy}" rx="${34*s}" ry="${13*s}"/><ellipse cx="${cx-22*s}" cy="${cy+5*s}" rx="${22*s}" ry="${9*s}"/><ellipse cx="${cx+24*s}" cy="${cy+4*s}" rx="${24*s}" ry="${10*s}"/></g>`}
+function clouds(op){return cloud(130,70,1.1,op)+cloud(330,48,0.85,op*0.9)+cloud(510,95,0.7,op*0.8)}
+function mountains(c1,c2,snow){
+  return `<path d="M-20 290 Q90 150 190 290 Z" fill="${c1}"/><path d="M120 290 Q260 120 390 290 Z" fill="${c2}"/><path d="M320 290 Q450 165 620 290 Z" fill="${c1}"/>
+  <path d="M72 176 Q90 150 108 176 Q96 186 90 178 Q82 187 72 176 Z" fill="${snow}"/>
+  <path d="M232 152 Q260 120 288 152 Q272 165 260 154 Q246 166 232 152 Z" fill="${snow}"/>
+  <path d="M428 190 Q450 165 474 190 Q460 200 450 191 Q440 201 428 190 Z" fill="${snow}"/>`;
+}
+const GROUND = `<path d="M-10 288 Q300 266 610 288 L610 400 L-10 400 Z" fill="#f4f1e8"/>`;
+const WATER = `<path d="M-10 292 Q300 274 610 292 L610 400 L-10 400 Z" fill="#bcd6e4"/>`;
+function pine(x,y,s){return `<g transform="translate(${x},${y}) scale(${s})"><rect x="-2.5" y="0" width="5" height="10" rx="2" fill="#8a6f55"/><path d="M0-34 L13-6 L-13-6 Z" fill="#7fa38a"/><path d="M0-24 L15 2 L-15 2 Z" fill="#6f957c"/><path d="M-9-22 Q0-26 9-22 L7-16 Q0-19-7-16 Z" fill="#f4f1e8"/></g>`}
+function people(x,y,s){
+  return `<g transform="translate(${x},${y}) scale(${s})">
+    <animateTransform attributeName="transform" type="translate" values="0 0;0 -2.5;0 0" dur="1.5s" repeatCount="indefinite" additive="sum"/>
+    <g><rect x="-9" y="-26" width="13" height="24" rx="6.5" fill="#d9705f"/><circle cx="-2.5" cy="-32" r="7" fill="#f6d9c3"/><path d="M-9-32 a7 7 0 0 1 13 0 l0-3 a7 7 0 0 0-13 0 Z" fill="#b8503f"/></g>
+    <g transform="translate(15,2)"><rect x="-9" y="-26" width="13" height="24" rx="6.5" fill="#5f87a8"/><circle cx="-2.5" cy="-32" r="7" fill="#f0cdb4"/><path d="M-9-33 a7 7 0 0 1 13 0 l0-2 a7 7 0 0 0-13 0 Z" fill="#3f6076"/></g>
+  </g>`;
+}
+function house(x,y,w,h,c,roof){return `<g><rect x="${x}" y="${y-h}" width="${w}" height="${h}" rx="4" fill="${c}"/><path d="M${x-6} ${y-h} L${x+w/2} ${y-h-16} L${x+w+6} ${y-h} Z" fill="${roof}"/><rect x="${x+w*0.18}" y="${y-h+10}" width="${w*0.2}" height="${w*0.2}" rx="2" fill="#ffe9b0"/><rect x="${x+w*0.6}" y="${y-h+10}" width="${w*0.2}" height="${w*0.2}" rx="2" fill="#ffe9b0"/></g>`}
+const FORE = {
+  city(){ return GROUND+house(70,340,64,52,'#e8a2a2','#b8503f')+house(150,340,58,66,'#a8c8dc','#5f87a8')+house(225,340,70,46,'#f2d492','#c8995a')+house(320,340,60,72,'#b5cba8','#7fa38a')+
+    `<rect x="430" y="230" width="56" height="110" rx="4" fill="#e8e2d4"/><path d="M424 230 L458 190 L492 230 Z" fill="#8a7f70"/><rect x="452" y="200" width="12" height="20" fill="#8a7f70"/>`+people(530,360,1.05); },
+  airport(){ return GROUND+`<rect x="0" y="330" width="600" height="26" fill="#9aa4ae"/><rect x="0" y="341" width="600" height="4" fill="#f4f1e8" stroke-dasharray="18 14" stroke="#f4f1e8" stroke-width="4"/>`+
+    `<rect x="60" y="262" width="150" height="66" rx="8" fill="#dfe5ea"/><rect x="80" y="244" width="26" height="20" rx="3" fill="#b9c4cd"/><rect x="75" y="276" width="20" height="14" rx="3" fill="#a8c8dc"/><rect x="110" y="276" width="20" height="14" rx="3" fill="#a8c8dc"/><rect x="145" y="276" width="20" height="14" rx="3" fill="#a8c8dc"/>`+
+    `<g transform="translate(390,316)"><ellipse cx="0" cy="0" rx="52" ry="13" fill="#f4f1e8"/><path d="M-14-4 L-52-26 L-40-28 L-4-10 Z" fill="#d9705f"/><path d="M10-4 L44-22 L34-25 L2-10 Z" fill="#d9705f"/><path d="M48-2 L62-14 L66-10 L54 0 Z" fill="#5f87a8"/><circle cx="22" cy="-4" r="2.5" fill="#5f87a8"/><circle cx="32" cy="-4" r="2.5" fill="#5f87a8"/></g>`; },
+  lagoon(){ return `<path d="M-10 300 Q120 262 260 292 Q420 320 610 296 L610 400 L-10 400 Z" fill="#4a4640"/>`+
+    `<path d="M40 330 Q200 300 380 322 Q480 334 560 326 L560 380 Q300 400 40 376 Z" fill="#a8d8e8"/>`+
+    `<path d="M40 330 Q200 300 380 322 Q480 334 560 326 L560 340 Q300 356 40 344 Z" fill="#c4e6f2"/>`+
+    `<path d="M120 300 q6-18 0-30 M150 296 q-6-16 2-30 M430 306 q6-16 0-28" stroke="#ffffff" stroke-width="5" fill="none" opacity=".55" stroke-linecap="round"/>`+
+    `<ellipse cx="90" cy="296" rx="26" ry="12" fill="#3a3630"/><ellipse cx="520" cy="300" rx="34" ry="14" fill="#3a3630"/>`+
+    `<rect x="230" y="252" width="120" height="46" rx="10" fill="#e8e2d4"/><rect x="250" y="264" width="22" height="16" rx="3" fill="#ffe9b0"/><rect x="290" y="264" width="22" height="16" rx="3" fill="#ffe9b0"/>`+people(180,352,0.95); },
+  rift(){ return GROUND+`<path d="M120 400 L200 190 L300 190 L250 400 Z" fill="#8a7f70"/><path d="M480 400 L400 190 L310 190 L360 400 Z" fill="#7a6f60"/><path d="M250 400 L300 190 L310 190 L360 400 Z" fill="#f4f1e8"/>`+
+    `<path d="M200 190 L300 190 L296 206 L204 206 Z" fill="#e8e2d4"/><path d="M310 190 L400 190 L396 206 L314 206 Z" fill="#e8e2d4"/>`+people(300,368,0.9); },
+  geysir(){ return GROUND+`<ellipse cx="300" cy="330" rx="90" ry="18" fill="#a8d8e8"/><ellipse cx="300" cy="328" rx="70" ry="12" fill="#c4e6f2"/>`+
+    `<g><animateTransform attributeName="transform" type="scale" values="1 0.6;1 1;1 0.6" dur="3.2s" repeatCount="indefinite" additive="sum"/>`+
+    `<path d="M286 322 Q280 240 292 190 Q300 160 308 190 Q320 240 314 322 Z" fill="#e8f4fa" opacity=".95"/><circle cx="300" cy="176" r="16" fill="#e8f4fa" opacity=".8"/><circle cx="282" cy="196" r="9" fill="#e8f4fa" opacity=".6"/><circle cx="318" cy="200" r="8" fill="#e8f4fa" opacity=".6"/></g>`+
+    `<ellipse cx="130" cy="340" rx="30" ry="10" fill="#8a7f70"/><ellipse cx="480" cy="344" rx="36" ry="11" fill="#8a7f70"/>`+people(180,360,0.9); },
+  waterfall(){ return `<path d="M150 400 L150 190 L470 190 L470 400 Z" fill="#7a6f60"/><path d="M150 190 L470 190 L470 206 L150 206 Z" fill="#e8e2d4"/>`+
+    `<rect x="250" y="192" width="120" height="148" fill="#e8f4fa"/><rect x="262" y="192" width="18" height="148" fill="#ffffff" opacity=".7"/><rect x="330" y="192" width="14" height="148" fill="#ffffff" opacity=".6"/>`+
+    `<ellipse cx="310" cy="346" rx="120" ry="22" fill="#c4e6f2"/><circle cx="250" cy="330" r="12" fill="#ffffff" opacity=".7"/><circle cx="370" cy="334" r="10" fill="#ffffff" opacity=".6"/>`+
+    `<path d="M210 300 Q310 240 410 300" stroke="#f2b8c6" stroke-width="7" fill="none" opacity=".7"/><path d="M218 308 Q310 252 402 308" stroke="#ffe9b0" stroke-width="6" fill="none" opacity=".7"/><path d="M226 316 Q310 264 394 316" stroke="#a8d8a8" stroke-width="5" fill="none" opacity=".7"/>`+people(140,362,0.9); },
+  waterfall2(){ return `<path d="M120 400 L120 150 L500 150 L500 400 Z" fill="#7a6f60"/><path d="M120 150 L500 150 L500 166 L120 166 Z" fill="#e8e2d4"/>`+
+    `<rect x="200" y="152" width="200" height="60" fill="#e8f4fa"/><rect x="200" y="212" width="240" height="16" fill="#7a6f60"/><rect x="230" y="228" width="180" height="112" fill="#e8f4fa"/><rect x="246" y="228" width="20" height="112" fill="#fff" opacity=".6"/><rect x="330" y="152" width="16" height="60" fill="#fff" opacity=".6"/>`+
+    `<ellipse cx="320" cy="348" rx="150" ry="24" fill="#c4e6f2"/><circle cx="240" cy="332" r="12" fill="#fff" opacity=".7"/><circle cx="400" cy="336" r="10" fill="#fff" opacity=".6"/>`+people(140,364,0.9); },
+  manor(){ return GROUND+pine(90,320,1.1)+pine(520,316,0.9)+
+    `<rect x="220" y="270" width="160" height="70" rx="8" fill="#e8e2d4"/><path d="M210 272 Q300 236 390 272 L390 280 Q300 248 210 280 Z" fill="#7fa38a"/><rect x="246" y="288" width="20" height="18" rx="3" fill="#ffe9b0"/><rect x="300" y="288" width="20" height="18" rx="3" fill="#ffe9b0"/><rect x="336" y="288" width="20" height="18" rx="3" fill="#ffe9b0"/><rect x="282" y="296" width="18" height="44" rx="4" fill="#8a6f55"/>`+
+    `<g transform="translate(450,330)"><ellipse cx="0" cy="0" rx="26" ry="15" fill="#a8795a"/><rect x="-18" y="8" width="6" height="18" rx="3" fill="#8a6248"/><rect x="10" y="8" width="6" height="18" rx="3" fill="#8a6248"/><circle cx="24" cy="-12" r="10" fill="#a8795a"/><path d="M18-18 q4-8 10-6" stroke="#5f4632" stroke-width="4" fill="none"/><path d="M-24-4 q-8 2-8 12" stroke="#5f4632" stroke-width="4" fill="none"/></g>`+people(180,356,0.95); },
+  blacksand(){ return `<path d="M-10 296 Q300 278 610 296 L610 400 L-10 400 Z" fill="#8fb8cc"/><path d="M-10 340 Q300 322 610 340 L610 400 L-10 400 Z" fill="#3f3b38"/>`+
+    `<path d="M-10 336 Q150 330 300 336 Q450 342 610 334 L610 348 Q300 358 -10 348 Z" fill="#ffffff" opacity=".75"/>`+
+    `<path d="M380 300 L396 218 L412 300 Z" fill="#3a3630"/><path d="M430 300 L448 238 L466 300 Z" fill="#3a3630"/>`+
+    `<rect x="120" y="306" width="10" height="34" rx="4" fill="#3a3630"/><rect x="138" y="310" width="10" height="30" rx="4" fill="#3a3630"/><rect x="156" y="312" width="10" height="28" rx="4" fill="#3a3630"/>`+people(250,368,0.9); },
+  glacier(){ return `<path d="M-10 250 Q300 226 610 250 L610 400 L-10 400 Z" fill="#a8cfe0"/>`+
+    `<path d="M-10 258 Q80 160 200 240 Q320 150 430 236 Q520 170 610 246 L610 262 L-10 262 Z" fill="#dceef6"/>`+
+    `<path d="M60 300 L90 268 L124 300 Z" fill="#eaf6fb"/><path d="M70 300 L92 276 L116 300 Z" fill="#bfe0ee"/>`+
+    `<path d="M260 316 L300 276 L344 316 Z" fill="#eaf6fb"/><path d="M272 316 L302 286 L334 316 Z" fill="#bfe0ee"/>`+
+    `<path d="M450 306 L476 280 L504 306 Z" fill="#eaf6fb"/><ellipse cx="200" cy="340" rx="16" ry="6" fill="#eaf6fb"/><ellipse cx="420" cy="350" rx="20" ry="7" fill="#eaf6fb"/>`+people(140,368,0.85); },
+  town(){ return GROUND+house(60,340,60,50,'#e8a2a2','#b8503f')+house(136,340,54,62,'#a8c8dc','#5f87a8')+house(205,340,64,44,'#f2d492','#c8995a')+house(284,340,56,56,'#b5cba8','#7fa38a')+
+    `<rect x="400" y="216" width="64" height="124" fill="#f4f1e8"/><path d="M400 216 L432 158 L464 216 Z" fill="#f4f1e8"/><path d="M412 216 L432 172 L452 216 Z" fill="#e0d5c0"/><rect x="426" y="250" width="12" height="20" rx="6" fill="#5f87a8"/>`+people(500,360,1); },
+  harbor(){ return `<path d="M-10 300 Q300 282 610 300 L610 400 L-10 400 Z" fill="#9cc2d8"/>`+mountains('#c8d8e4','#b8ccdc','#f4f8fa')+
+    house(60,300,52,40,'#d9705f','#8a4a3f')+house(124,300,46,48,'#f2d492','#c8995a')+house(470,300,50,42,'#a8c8dc','#5f87a8')+
+    `<path d="M180 306 Q300 250 420 306" stroke="#e8e2d4" stroke-width="7" fill="none"/><path d="M200 306 L200 288 M260 306 L260 272 M340 306 L340 272 M400 306 L400 288" stroke="#e8e2d4" stroke-width="4"/>`+
+    `<g transform="translate(260,336)"><path d="M-34 0 L34 0 L24 14 L-24 14 Z" fill="#b8503f"/><rect x="-12" y="-14" width="24" height="14" rx="3" fill="#f4f1e8"/><rect x="-2" y="-26" width="4" height="12" fill="#8a6f55"/></g>`+
+    `<g transform="translate(400,352)"><path d="M-26 0 L26 0 L18 11 L-18 11 Z" fill="#5f87a8"/><rect x="-9" y="-11" width="18" height="11" rx="3" fill="#f4f1e8"/></g>`+people(140,330,0.85); },
+  cable(){ return GROUND+`<path d="M330 400 L470 90 L610 400 Z" fill="#c8d8e4"/><path d="M448 122 L470 90 L492 122 Q470 134 448 122 Z" fill="#f4f8fa"/>`+
+    `<path d="M60 330 L470 110" stroke="#8a7f70" stroke-width="3"/><g><animateTransform attributeName="transform" type="translate" values="0 0;120 -64;0 0" dur="9s" repeatCount="indefinite"/><rect x="150" y="262" width="34" height="26" rx="6" fill="#d9705f"/><rect x="156" y="268" width="10" height="10" rx="2" fill="#ffe9b0"/><rect x="170" y="268" width="10" height="10" rx="2" fill="#ffe9b0"/><rect x="164" y="252" width="6" height="10" fill="#8a7f70"/></g>`+
+    pine(80,336,1)+pine(140,342,0.8)+people(240,362,0.9); },
+  cathedral(){ return GROUND+`<path d="M210 340 L300 180 L390 340 Z" fill="#f4f1e8"/><path d="M236 340 L300 216 L364 340 Z" fill="#e8e2d4"/><path d="M262 340 L300 252 L338 340 Z" fill="#f4f1e8"/><rect x="296" y="150" width="8" height="34" fill="#f4f1e8"/><rect x="286" y="158" width="28" height="7" fill="#f4f1e8"/>`+pine(140,332,0.9)+pine(450,330,1)+people(380,362,0.9); },
+  sea(){ return `<path d="M-10 280 Q300 262 610 280 L610 400 L-10 400 Z" fill="#8fb8cc"/><path d="M-10 292 Q150 282 300 292 Q450 302 610 290 L610 302 Q300 316 -10 302 Z" fill="#ffffff" opacity=".6"/>`+
+    `<g transform="translate(300,300)"><path d="M0 0 Q-6-34 -30-44 Q-14-46 -6-34 Q-2-48 4-52 Q10-44 8-32 Q16-44 32-42 Q10-32 8 0 Z" fill="#3a4a58"/><path d="M-8-56 q0-14 6-20 M2-58 q2-12 8-16" stroke="#ffffff" stroke-width="3.5" fill="none" opacity=".8" stroke-linecap="round"/></g>`+
+    `<g transform="translate(150,330)"><path d="M-30 0 L30 0 L22 12 L-22 12 Z" fill="#b8503f"/><rect x="-10" y="-12" width="20" height="12" rx="3" fill="#f4f1e8"/></g>`; },
+  fjordtown(){ return `<path d="M-10 288 Q300 270 610 288 L610 400 L-10 400 Z" fill="#9cc2d8"/>`+mountains('#b8ccdc','#a8bfd0','#f4f8fa')+
+    house(90,306,50,38,'#c0392b','#7a2820')+house(160,308,44,34,'#d9705f','#8a4a3f')+house(440,306,48,36,'#c0392b','#7a2820')+
+    `<path d="M100 330 Q300 344 500 330" stroke="#ffffff" stroke-width="3" fill="none" opacity=".5"/>`+people(300,344,0.85); },
+  camp(){ return GROUND+`<path d="M120 340 L170 268 L220 340 Z" fill="#d9705f"/><path d="M158 340 L170 318 L182 340 Z" fill="#8a4a3f"/><path d="M300 340 L345 276 L390 340 Z" fill="#5f87a8"/><path d="M334 340 L345 320 L356 340 Z" fill="#3f6076"/>`+
+    `<rect x="430" y="316" width="90" height="8" rx="4" fill="#8a6f55"/><rect x="440" y="324" width="6" height="14" fill="#8a6f55"/><rect x="504" y="324" width="6" height="14" fill="#8a6f55"/>`+
+    `<g transform="translate(470,300)"><ellipse cx="0" cy="0" rx="13" ry="8" fill="#e8e2d4"/><circle cx="12" cy="-6" r="6" fill="#e8e2d4"/><rect x="-8" y="6" width="4" height="8" fill="#cfc4ae"/><rect x="4" y="6" width="4" height="8" fill="#cfc4ae"/></g>`+
+    `<g transform="translate(520,294)"><ellipse cx="0" cy="0" rx="12" ry="7" fill="#b5a88f"/><circle cx="11" cy="-5" r="5.5" fill="#b5a88f"/></g>`+people(250,352,0.9); },
+  snowfield(){ return GROUND+pine(500,330,1.2)+pine(552,338,0.9)+
+    `<path d="M240 348 L290 292 L340 348 Z" fill="#f2d492"/><rect x="278" y="322" width="24" height="26" rx="3" fill="#c8995a"/><circle cx="290" cy="312" r="8" fill="#ffe9b0" opacity=".9"/>`+people(170,356,0.95); },
+  hotel(){ return GROUND+`<rect x="200" y="200" width="200" height="140" rx="8" fill="#e8d9c0"/><rect x="200" y="200" width="200" height="16" rx="8" fill="#c8995a"/><rect x="216" y="230" width="24" height="26" rx="3" fill="#ffe9b0"/><rect x="256" y="230" width="24" height="26" rx="3" fill="#ffe9b0"/><rect x="296" y="230" width="24" height="26" rx="3" fill="#5f87a8"/><rect x="336" y="230" width="24" height="26" rx="3" fill="#ffe9b0"/><rect x="216" y="272" width="24" height="26" rx="3" fill="#ffe9b0"/><rect x="256" y="272" width="24" height="26" rx="3" fill="#5f87a8"/><rect x="296" y="272" width="24" height="26" rx="3" fill="#ffe9b0"/><rect x="336" y="272" width="24" height="26" rx="3" fill="#ffe9b0"/><rect x="282" y="308" width="36" height="32" rx="4" fill="#8a6f55"/>`+
+    `<rect x="120" y="280" width="6" height="60" fill="#6a6156"/><circle cx="123" cy="274" r="9" fill="#ffe9b0"/>`+people(450,356,0.95); },
+  opera(){ return `<path d="M-10 320 Q300 304 610 320 L610 400 L-10 400 Z" fill="#9cc2d8"/>`+
+    `<path d="M160 320 L330 200 L470 320 Z" fill="#f4f1e8"/><path d="M330 200 L470 320 L560 320 Z" fill="#e8e2d4"/><path d="M200 320 L330 224 L330 320 Z" fill="#ffffff"/>`+
+    `<path d="M180 344 Q300 356 480 344" stroke="#ffffff" stroke-width="3" fill="none" opacity=".6"/>`+people(360,340,0.8); },
+  restaurant(){ return `<rect x="0" y="0" width="600" height="400" fill="#5a4a3f"/><rect x="60" y="60" width="200" height="150" rx="10" fill="#3f342c"/><rect x="70" y="70" width="180" height="130" rx="8" fill="#dfeaf2"/><path d="M70 200 Q160 120 250 200 Z" fill="#f4f8fa" opacity=".8"/>`+
+    `<ellipse cx="400" cy="300" rx="130" ry="34" fill="#e8d9c0"/><ellipse cx="400" cy="292" rx="130" ry="34" fill="#f4ece0"/>`+
+    `<circle cx="350" cy="286" r="20" fill="#ffffff"/><circle cx="350" cy="286" r="12" fill="#f2d492"/><circle cx="440" cy="292" r="20" fill="#ffffff"/><circle cx="440" cy="292" r="11" fill="#d9705f"/>`+
+    `<rect x="470" y="240" width="10" height="46" fill="#8a6f55"/><ellipse cx="475" cy="238" rx="12" ry="8" fill="#7fa38a"/>`+
+    `<path d="M330 120 L330 150 M400 100 L400 140 M470 120 L470 150" stroke="#3f342c" stroke-width="4"/><circle cx="330" cy="158" r="12" fill="#ffe9b0"/><circle cx="400" cy="148" r="14" fill="#ffe9b0"/><circle cx="470" cy="158" r="12" fill="#ffe9b0"/>`; },
+};
+function sceneSVG(locKey, sky, mode){
+  const sc = LOC[locKey].sc;
+  const night = sky.stars>0.5;
+  const cloudOp = night?0.22:0.85;
+  const mt = night?['#5a6a88','#4d5c7a','#8a97b0']:['#b8ccdc','#a8bfd0','#f4f8fa'];
+  const fg = (FORE[sc]||FORE.city)();
+  const zzz = mode==='sleep' ? `<text x="520" y="210" font-size="30" fill="#8a7f70" font-family="sans-serif">Z z z</text>` : '';
+  return `<svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" style="display:block">
+    <defs>${grad('sky',sky.top.join(','),sky.bot.join(','))}</defs>
+    <rect width="600" height="400" fill="url(#sky)"/>
+    ${starsSvg(sky.stars)}${celestial(sky)}${clouds(cloudOp)}${mountains(mt[0],mt[1],mt[2])}${fg}${zzz}
+  </svg>`;
+}
+/* 转场：移动场景 */
+function travelSVG(step, sky){
+  const m = step.mode;
+  let inner='';
+  if (m==='car'){
+    inner = `<path d="M-10 300 Q300 282 610 300 L610 400 L-10 400 Z" fill="#e8e2d4"/>
+      <path d="M-10 330 Q300 316 610 330" stroke="#9aa4ae" stroke-width="30" fill="none"/>
+      <path d="M-10 330 Q300 316 610 330" stroke="#f4f1e8" stroke-width="3" stroke-dasharray="16 14" fill="none"/>
+      ${pine(90,318,1)}${pine(530,322,1.15)}${pine(470,330,0.8)}
+      <g id="veh" transform="translate(90,316)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0 0;0 -1.5;0 0" dur="0.5s" repeatCount="indefinite"/>
+        <rect x="-34" y="-30" width="68" height="26" rx="9" fill="#d9705f"/><rect x="-26" y="-26" width="16" height="12" rx="3" fill="#dfeaf2"/><rect x="-4" y="-26" width="16" height="12" rx="3" fill="#dfeaf2"/><rect x="16" y="-26" width="12" height="12" rx="3" fill="#dfeaf2"/>
+        <circle cx="-18" cy="-2" r="7" fill="#4a4238"/><circle cx="18" cy="-2" r="7" fill="#4a4238"/><circle cx="-18" cy="-2" r="3" fill="#e0d5c0"/><circle cx="18" cy="-2" r="3" fill="#e0d5c0"/></g></g>`;
+  } else if (m==='plane'){
+    inner = cloud(180,150,1.3,0.9)+cloud(430,200,1,0.85)+cloud(300,260,0.8,0.7)+
+      `<g id="veh" transform="translate(90,140)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="1.8s" repeatCount="indefinite"/>
+        <ellipse cx="0" cy="0" rx="46" ry="11" fill="#f4f1e8"/><path d="M-12-3 L-46-22 L-36-24 L-4-8 Z" fill="#d9705f"/><path d="M8-3 L38-18 L30-21 L0-8 Z" fill="#d9705f"/><path d="M42-2 L54-12 L58-8 L48 1 Z" fill="#5f87a8"/><circle cx="16" cy="-3" r="2.2" fill="#5f87a8"/><circle cx="25" cy="-3" r="2.2" fill="#5f87a8"/></g></g>`;
+  } else {
+    inner = `<path d="M-10 260 Q300 244 610 260 L610 400 L-10 400 Z" fill="#8fb8cc"/>
+      <path d="M-10 280 Q150 270 300 280 Q450 290 610 278" stroke="#ffffff" stroke-width="3" fill="none" opacity=".5"/>
+      <g id="veh" transform="translate(90,296)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0 0;0 -4;0 0" dur="1.4s" repeatCount="indefinite"/>
+        <path d="M-40 0 L40 0 L28 16 L-28 16 Z" fill="#b8503f"/><rect x="-18" y="-18" width="36" height="18" rx="4" fill="#f4f1e8"/><rect x="-11" y="-14" width="8" height="8" rx="2" fill="#5f87a8"/><rect x="3" y="-14" width="8" height="8" rx="2" fill="#5f87a8"/><rect x="-2" y="-32" width="4" height="14" fill="#8a6f55"/></g></g>`;
+  }
+  return `<svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" style="display:block">
+    <defs>${grad('sky',sky.top.join(','),sky.bot.join(','))}</defs>
+    <rect width="600" height="400" fill="url(#sky)"/>
+    ${starsSvg(sky.stars)}${celestial(sky)}${clouds(sky.stars>0.5?0.22:0.7)}${inner}
+    <text x="34" y="384" font-size="15" fill="#6a6156" font-family="sans-serif">📍 ${LOC[step.from].n}</text>
+    <text x="566" y="384" font-size="15" fill="#6a6156" font-family="sans-serif" text-anchor="end">${LOC[step.to].n} 🏁</text>
+  </svg>`;
+}
+
+/* ═════════ 引擎 ═════════ */
+const TOTAL = 312, RATE = 312/300;
+let T = 0, playing = true, speed = 1;
+let curStepKey = null, curLoc = null, curRegion = null, swapToken = 0;
+const $ = id => document.getElementById(id);
+const sceneEl=$('scene'), tintEl=$('tint'), placeEl=$('placename'), flashEl=$('rflash');
+const MODE_EMOJI = {car:'🚐', plane:'✈️', boat:'🚢'};
+
+/* 极光罩 */
+const aur = document.createElement('div');
+aur.style.cssText = 'position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1.6s;mix-blend-mode:screen;background:linear-gradient(100deg,transparent 15%,rgba(120,255,190,.4) 38%,rgba(150,160,255,.3) 55%,rgba(120,255,190,.25) 70%,transparent 88%);filter:blur(7px);';
+$('page').appendChild(aur);
+const st = document.createElement('style');
+st.textContent = '@keyframes aurflow{from{transform:translateX(-3%) skewX(-3deg)}to{transform:translateX(3%) skewX(3deg)}}';
+document.head.appendChild(st);
+aur.style.animation = 'aurflow 8s ease-in-out infinite alternate';
+/* 转场计时牌 */
+const tbadge = document.createElement('div');
+tbadge.style.cssText = 'position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(255,253,247,.9);border:1px solid var(--line);border-radius:20px;padding:5px 18px;font-size:14px;color:var(--ink);display:none;box-shadow:0 3px 10px rgba(74,66,56,.15);letter-spacing:1px;';
+$('page').appendChild(tbadge);
+
+function stepAt(tt){
+  const di = Math.min(12, Math.floor(tt/24));
+  const h = Math.min(23.999, tt - di*24);
+  const d = DAYS[di];
+  for (let i=0;i<d.steps.length;i++){ const s=d.steps[i]; if (h>=s.t0 && h<s.t1) return {s, di, h, si:i}; }
+  return {s:d.steps[d.steps.length-1], di, h, si:d.steps.length-1};
+}
+function fmtClock(h){ const H=Math.floor(h), M=Math.floor((h-H)*60); return `${String(H).padStart(2,'0')}:${String(M).padStart(2,'0')}`; }
+
+/* ── 画廊 ── */
+let gLoc=null, gIdx=0, gTimer=null;
+function setGallery(loc){
+  if (gLoc===loc) return;
+  gLoc=loc; gIdx=0;
+  $('g-place').textContent = LOC[loc].n;
+  const photos = GALLERY[loc]||[];
+  const dots=$('g-dots'); dots.innerHTML='';
+  photos.forEach((_,i)=>{ const d=document.createElement('span'); d.className='g-dot'; d.onclick=()=>{showPhoto(i);resetTimer();}; dots.appendChild(d); });
+  showPhoto(0, true);
+  const gal=$('gallery'); gal.classList.remove('pop'); void gal.offsetWidth; gal.classList.add('pop');
+  resetTimer();
+  (GALLERY[loc]||[]).slice(1).forEach(u=>{ const im=new Image(); im.src=u; });
+}
+function showPhoto(i, instant){
+  const photos=GALLERY[gLoc]||[]; if(!photos.length) return;
+  gIdx=(i+photos.length)%photos.length;
+  const img=$('g-img');
+  const apply=()=>{ img.src=photos[gIdx];
+    img.onload=()=>{img.style.opacity=1;};
+    img.onerror=()=>{img.style.opacity=1;};
+  };
+  if (instant){ apply(); img.style.opacity=1; }
+  else { img.style.opacity=0; setTimeout(apply, 240); }
+  const caps=CAPS[gLoc]||[''];
+  $('g-cap').textContent = caps[gIdx%caps.length]||'';
+  [...$('g-dots').children].forEach((d,j)=>d.classList.toggle('now', j===gIdx));
+}
+function resetTimer(){ clearInterval(gTimer); gTimer=setInterval(()=>showPhoto(gIdx+1), 4500); }
+$('g-prev').onclick=()=>{showPhoto(gIdx-1);resetTimer();};
+$('g-next').onclick=()=>{showPhoto(gIdx+1);resetTimer();};
+
+/* ── 打字机 ── */
+let typeTimer=null;
+function typeText(str){
+  clearInterval(typeTimer); const el=$('s-text'); el.textContent=''; let i=0;
+  typeTimer=setInterval(()=>{ el.textContent=str.slice(0,++i); if(i>=str.length) clearInterval(typeTimer); },42);
+}
+
+/* ── 步骤切换 ── */
+function onStepChange(s, di, si){
+  const isTravel = (s.mode==='car'||s.mode==='plane'||s.mode==='boat') && s.from!==s.to;
+  const loc = isTravel ? s.to : s.from;
+  const region = s.region || DAYS[di].region;
+  const sky = skyAt(region, (s.t0+s.t1)/2 % 24);
+  const token = ++swapToken;
+  sceneEl.classList.add('fadeout');
+  setTimeout(()=>{
+    if (token!==swapToken) return;
+    sceneEl.innerHTML = isTravel ? travelSVG(s, sky) : sceneSVG(loc, sky, s.mode);
+    sceneEl.classList.remove('fadeout');
+  }, 420);
+  /* 地名横幅 */
+  placeEl.classList.remove('show');
+  setTimeout(()=>{
+    placeEl.textContent = isTravel ? `${MODE_EMOJI[s.mode]} 前往 · ${LOC[s.to].n}` : LOC[loc].b;
+    placeEl.classList.add('show');
+  }, 500);
+  /* 画廊 */
+  setGallery(loc);
+  /* 换国家 */
+  if (curRegion && region!==curRegion){
+    flashEl.textContent = REGION_TXT[region]||'';
+    flashEl.classList.add('show');
+    setTimeout(()=>flashEl.classList.remove('show'), 1500);
+  }
+  curRegion = region;
+  /* 章节头 + 叙事 */
+  $('c-no').textContent = `第${CN[di]}天 · DAY ${di+1}/13`;
+  $('c-title').textContent = DAYS[di].title;
+  $('s-head').textContent = `D${di+1} · ${DAYS[di].date} ${DAYS[di].wd}`;
+  typeText(s.label);
+  /* 天数 chips */
+  [...$('daychips').children].forEach((c,j)=>{ c.classList.toggle('now', j===di); c.classList.toggle('past', j<di); });
+  tbadge.style.display = isTravel ? 'block' : 'none';
+}
+
+/* ── 主渲染 ── */
+function render(){
+  const {s, di, h} = stepAt(T);
+  const key = di+':'+DAYS[di].steps.indexOf(s);
+  if (key!==curStepKey){ curStepKey=key; onStepChange(s, di, DAYS[di].steps.indexOf(s)); }
+  const region = s.region || DAYS[di].region;
+  const sky = skyAt(region, h);
+  tintEl.style.background = `rgba(26,34,72,${(sky.stars*0.34).toFixed(3)})`;
+  aur.style.opacity = ((region==='trom'||region==='ice')&&sky.stars>0.55) ? '1' : '0';
+  $('h-clock').textContent = fmtClock(h);
+  $('h-date').textContent = `${DAYS[di].date} ${DAYS[di].wd} · ${(REGION_TXT[region]||'').replace(/\s*🇮🇸|🇳🇴/g,'')}`;
+  /* 转场进度 */
+  const isTravel = (s.mode==='car'||s.mode==='plane'||s.mode==='boat') && s.from!==s.to;
+  if (isTravel){
+    const p = Math.min(1,(h-s.t0)/((s.t1-s.t0)||1));
+    const veh = sceneEl.querySelector('#veh');
+    if (veh) veh.setAttribute('transform', `translate(${90+p*420},${s.mode==='plane'?140:(s.mode==='car'?316:296)})`);
+    const durM = Math.round((s.t1-s.t0)*60), elM = Math.round((h-s.t0)*60);
+    tbadge.textContent = `${MODE_EMOJI[s.mode]} 已走 ${elM} 分钟 / 全程 ${durM} 分钟`;
+  }
+  /* 进度条 */
+  const pct = T/TOTAL*100;
+  const sc=$('scrub'); sc.value = Math.round(T/TOTAL*1299);
+  sc.style.setProperty('--p', pct+'%');
+}
+
+/* ── 控件 ── */
+const SPEEDS=[1,2,4,8]; let spIdx=0;
+function setPlaying(p){ playing=p; $('btn-play').textContent = p?'⏸ 暂停':'▶ 播放'; }
+$('btn-play').onclick=()=>{ if(T>=TOTAL) T=0; setPlaying(!playing); };
+$('btn-speed').onclick=()=>{ spIdx=(spIdx+1)%SPEEDS.length; speed=SPEEDS[spIdx]; $('btn-speed').textContent=speed+'×'; };
+function jumpDay(d){ T=Math.min(TOTAL-0.01, d*24+8.2); }
+$('btn-prev').onclick=()=>jumpDay(Math.max(0,Math.floor(T/24)-1));
+$('btn-next').onclick=()=>jumpDay(Math.min(12,Math.floor(T/24)+1));
+$('scrub').addEventListener('input', e=>{ T=e.target.value/1299*TOTAL; });
+const chips=$('daychips');
+DAYS.forEach((d,i)=>{ const c=document.createElement('span'); c.className='chip'; c.textContent='D'+(i+1); c.title=d.date+' '+d.title; c.onclick=()=>jumpDay(i); chips.appendChild(c); });
+
+/* ?t=3.6 → 第3天 60% 处，静止定位（截图用） */
+const qp=new URLSearchParams(location.search);
+if (qp.has('t')){ const v=parseFloat(qp.get('t')); const d=Math.max(1,Math.floor(v)); T=(d-1)*24+(v-d)*24; setPlaying(false); }
+
+let lastNow=performance.now();
+function frame(now){
+  const dt=(now-lastNow)/1000; lastNow=now;
+  if (playing){ T+=dt*RATE*speed; if(T>=TOTAL){T=TOTAL; setPlaying(false);} }
+  render();
+  requestAnimationFrame(frame);
+}
+render();
+requestAnimationFrame(frame);
+
+</script>
+</body>
+</html>
